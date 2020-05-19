@@ -5,189 +5,162 @@
 #define PB_PACKET_PB_H_INCLUDED
 #include <pb.h>
 
-#ifdef UENUM
-#undef UENUM
-#endif
-
 #if PB_PROTO_HEADER_VERSION != 40
 #error Regenerate this file with the current version of nanopb generator.
 #endif
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
-    /* Enum definitions */
-    typedef enum _NodeType
-    {
-        NodeType_UnknownType = 0,
-        NodeType_environment = 1,
-        NodeType_energy = 2
-    } NodeType;
+/* Enum definitions */
+typedef enum _NodeType {
+    NodeType_UnknownType = 0,
+    NodeType_environment = 1,
+    NodeType_energy = 2
+} NodeType;
 
-    typedef enum _NodeLocation
-    {
-        NodeLocation_unknownLocation = 0,
-        NodeLocation_outdoor = 2,
-        NodeLocation_greenhouse = 3,
-        NodeLocation_lounge = 4,
-        NodeLocation_bedroom = 5,
-        NodeLocation_gas = 20,
-        NodeLocation_electricity = 21
-    } NodeLocation;
+typedef enum _NodeLocation {
+    NodeLocation_unknownLocation = 0,
+    NodeLocation_outdoor = 2,
+    NodeLocation_greenhouse = 3,
+    NodeLocation_lounge = 4,
+    NodeLocation_bedroom = 5,
+    NodeLocation_gas = 20,
+    NodeLocation_electricity = 21
+} NodeLocation;
 
-    typedef enum _SensorName
-    {
-        SensorName_UnknownSensor = 0,
-        SensorName_HDC1080 = 1,
-        SensorName_SDC30 = 2,
-        SensorName_VEML7700 = 3,
-        SensorName_BMP388 = 4,
-        SensorName_LORA = 5,
-        SensorName_BATTERY = 6,
-        SensorName_EMONPI = 7,
-        SensorName_BOILERLIGHT = 8,
-        SensorName_DHT22 = 9,
-        SensorName_VIRTUAL = 20
-    } SensorName;
+typedef enum _SensorName {
+    SensorName_UnknownSensor = 0,
+    SensorName_HDC1080 = 1,
+    SensorName_SDC30 = 2,
+    SensorName_VEML7700 = 3,
+    SensorName_BMP388 = 4,
+    SensorName_LORA = 5,
+    SensorName_BATTERY = 6,
+    SensorName_EMONPI = 7,
+    SensorName_BOILERLIGHT = 8,
+    SensorName_DHT22 = 9,
+    SensorName_VIRTUAL = 20
+} SensorName;
 
-    /* Struct definitions */
-    typedef struct _Measurement
-    {
-        SensorName sensor;
-        pb_size_t which_type;
-        union {
-            float temperature;
-            float humidity;
-            float pressure;
-            float co2;
-            float light;
-            float electricity;
-            bool gas;
-            float voltage;
-            float rssi;
-            float frequency_error;
-            float snr;
-            float dewpoint;
-        } type;
-    } Measurement;
+/* Struct definitions */
+typedef struct _Measurement {
+    SensorName sensor;
+    pb_size_t which_type;
+    union {
+        float temperature;
+        float humidity;
+        float pressure;
+        float co2;
+        float light;
+        float electricity;
+        bool gas;
+        float voltage;
+        float rssi;
+        float frequency_error;
+        float snr;
+        float dewpoint;
+    } type;
+} Measurement;
 
-    typedef struct _Meta
-    {
-        NodeLocation node_location;
-        NodeType node_type;
-        char firmware_version[6];
-        int32_t chip_id;
-    } Meta;
+typedef struct _Meta {
+    NodeLocation node_location;
+    NodeType node_type;
+    char firmware_version[6];
+    int32_t chip_id;
+} Meta;
 
-    typedef struct _Packet
-    {
-        int32_t packet_id;
-        bool has_meta;
-        Meta meta;
-        pb_callback_t measurements;
-    } Packet;
+typedef struct _Packet {
+    int32_t packet_id;
+    bool has_meta;
+    Meta meta;
+    pb_callback_t measurements;
+} Packet;
+
 
 /* Helper constants for enums */
 #define _NodeType_MIN NodeType_UnknownType
 #define _NodeType_MAX NodeType_energy
-#define _NodeType_ARRAYSIZE ((NodeType)(NodeType_energy + 1))
+#define _NodeType_ARRAYSIZE ((NodeType)(NodeType_energy+1))
 
 #define _NodeLocation_MIN NodeLocation_unknownLocation
 #define _NodeLocation_MAX NodeLocation_electricity
-#define _NodeLocation_ARRAYSIZE ((NodeLocation)(NodeLocation_electricity + 1))
+#define _NodeLocation_ARRAYSIZE ((NodeLocation)(NodeLocation_electricity+1))
 
 #define _SensorName_MIN SensorName_UnknownSensor
 #define _SensorName_MAX SensorName_VIRTUAL
-#define _SensorName_ARRAYSIZE ((SensorName)(SensorName_VIRTUAL + 1))
+#define _SensorName_ARRAYSIZE ((SensorName)(SensorName_VIRTUAL+1))
+
 
 /* Initializer values for message structs */
-#define Measurement_init_default  \
-    {                             \
-        _SensorName_MIN, 0, { 0 } \
-    }
-#define Meta_init_default                       \
-    {                                           \
-        _NodeLocation_MIN, _NodeType_MIN, "", 0 \
-    }
-#define Packet_init_default                           \
-    {                                                 \
-        0, false, Meta_init_default, { {NULL}, NULL } \
-    }
-#define Measurement_init_zero     \
-    {                             \
-        _SensorName_MIN, 0, { 0 } \
-    }
-#define Meta_init_zero                          \
-    {                                           \
-        _NodeLocation_MIN, _NodeType_MIN, "", 0 \
-    }
-#define Packet_init_zero                           \
-    {                                              \
-        0, false, Meta_init_zero, { {NULL}, NULL } \
-    }
+#define Measurement_init_default                 {_SensorName_MIN, 0, {0}}
+#define Meta_init_default                        {_NodeLocation_MIN, _NodeType_MIN, "", 0}
+#define Packet_init_default                      {0, false, Meta_init_default, {{NULL}, NULL}}
+#define Measurement_init_zero                    {_SensorName_MIN, 0, {0}}
+#define Meta_init_zero                           {_NodeLocation_MIN, _NodeType_MIN, "", 0}
+#define Packet_init_zero                         {0, false, Meta_init_zero, {{NULL}, NULL}}
 
 /* Field tags (for use in manual encoding/decoding) */
-#define Measurement_temperature_tag 2
-#define Measurement_humidity_tag 3
-#define Measurement_pressure_tag 4
-#define Measurement_co2_tag 5
-#define Measurement_light_tag 6
-#define Measurement_electricity_tag 7
-#define Measurement_gas_tag 8
-#define Measurement_voltage_tag 20
-#define Measurement_rssi_tag 30
-#define Measurement_frequency_error_tag 31
-#define Measurement_snr_tag 32
-#define Measurement_dewpoint_tag 40
-#define Measurement_sensor_tag 1
-#define Meta_node_location_tag 1
-#define Meta_node_type_tag 2
-#define Meta_firmware_version_tag 5
-#define Meta_chip_id_tag 6
-#define Packet_packet_id_tag 1
-#define Packet_meta_tag 2
-#define Packet_measurements_tag 3
+#define Measurement_temperature_tag              2
+#define Measurement_humidity_tag                 3
+#define Measurement_pressure_tag                 4
+#define Measurement_co2_tag                      5
+#define Measurement_light_tag                    6
+#define Measurement_electricity_tag              7
+#define Measurement_gas_tag                      8
+#define Measurement_voltage_tag                  20
+#define Measurement_rssi_tag                     30
+#define Measurement_frequency_error_tag          31
+#define Measurement_snr_tag                      32
+#define Measurement_dewpoint_tag                 40
+#define Measurement_sensor_tag                   1
+#define Meta_node_location_tag                   1
+#define Meta_node_type_tag                       2
+#define Meta_firmware_version_tag                5
+#define Meta_chip_id_tag                         6
+#define Packet_packet_id_tag                     1
+#define Packet_meta_tag                          2
+#define Packet_measurements_tag                  3
 
 /* Struct field encoding specification for nanopb */
-#define Measurement_FIELDLIST(X, a)                                               \
-    X(a, STATIC, SINGULAR, UENUM, sensor, 1)                                      \
-    X(a, STATIC, ONEOF, FLOAT, (type, temperature, type.temperature), 2)          \
-    X(a, STATIC, ONEOF, FLOAT, (type, humidity, type.humidity), 3)                \
-    X(a, STATIC, ONEOF, FLOAT, (type, pressure, type.pressure), 4)                \
-    X(a, STATIC, ONEOF, FLOAT, (type, co2, type.co2), 5)                          \
-    X(a, STATIC, ONEOF, FLOAT, (type, light, type.light), 6)                      \
-    X(a, STATIC, ONEOF, FLOAT, (type, electricity, type.electricity), 7)          \
-    X(a, STATIC, ONEOF, BOOL, (type, gas, type.gas), 8)                           \
-    X(a, STATIC, ONEOF, FLOAT, (type, voltage, type.voltage), 20)                 \
-    X(a, STATIC, ONEOF, FLOAT, (type, rssi, type.rssi), 30)                       \
-    X(a, STATIC, ONEOF, FLOAT, (type, frequency_error, type.frequency_error), 31) \
-    X(a, STATIC, ONEOF, FLOAT, (type, snr, type.snr), 32)                         \
-    X(a, STATIC, ONEOF, FLOAT, (type, dewpoint, type.dewpoint), 40)
+#define Measurement_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UENUM,    sensor,            1) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,temperature,type.temperature),   2) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,humidity,type.humidity),   3) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,pressure,type.pressure),   4) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,co2,type.co2),   5) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,light,type.light),   6) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,electricity,type.electricity),   7) \
+X(a, STATIC,   ONEOF,    BOOL,     (type,gas,type.gas),   8) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,voltage,type.voltage),  20) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,rssi,type.rssi),  30) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,frequency_error,type.frequency_error),  31) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,snr,type.snr),  32) \
+X(a, STATIC,   ONEOF,    FLOAT,    (type,dewpoint,type.dewpoint),  40)
 #define Measurement_CALLBACK NULL
 #define Measurement_DEFAULT NULL
 
-#define Meta_FIELDLIST(X, a)                            \
-    X(a, STATIC, SINGULAR, UENUM, node_location, 1)     \
-    X(a, STATIC, SINGULAR, UENUM, node_type, 2)         \
-    X(a, STATIC, SINGULAR, STRING, firmware_version, 5) \
-    X(a, STATIC, SINGULAR, INT32, chip_id, 6)
+#define Meta_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, UENUM,    node_location,     1) \
+X(a, STATIC,   SINGULAR, UENUM,    node_type,         2) \
+X(a, STATIC,   SINGULAR, STRING,   firmware_version,   5) \
+X(a, STATIC,   SINGULAR, INT32,    chip_id,           6)
 #define Meta_CALLBACK NULL
 #define Meta_DEFAULT NULL
 
-#define Packet_FIELDLIST(X, a)                  \
-    X(a, STATIC, SINGULAR, INT32, packet_id, 1) \
-    X(a, STATIC, OPTIONAL, MESSAGE, meta, 2)    \
-    X(a, CALLBACK, REPEATED, MESSAGE, measurements, 3)
+#define Packet_FIELDLIST(X, a) \
+X(a, STATIC,   SINGULAR, INT32,    packet_id,         1) \
+X(a, STATIC,   OPTIONAL, MESSAGE,  meta,              2) \
+X(a, CALLBACK, REPEATED, MESSAGE,  measurements,      3)
 #define Packet_CALLBACK pb_default_field_callback
 #define Packet_DEFAULT NULL
 #define Packet_meta_MSGTYPE Meta
 #define Packet_measurements_MSGTYPE Measurement
 
-    extern const pb_msgdesc_t Measurement_msg;
-    extern const pb_msgdesc_t Meta_msg;
-    extern const pb_msgdesc_t Packet_msg;
+extern const pb_msgdesc_t Measurement_msg;
+extern const pb_msgdesc_t Meta_msg;
+extern const pb_msgdesc_t Packet_msg;
 
 /* Defines for backwards compatibility with code written before nanopb-0.4.0 */
 #define Measurement_fields &Measurement_msg
@@ -195,9 +168,9 @@ extern "C"
 #define Packet_fields &Packet_msg
 
 /* Maximum encoded size of messages (where known) */
-#define Measurement_size 8
-#define Meta_size 22
-    /* Packet_size depends on runtime parameters */
+#define Measurement_size                         8
+#define Meta_size                                22
+/* Packet_size depends on runtime parameters */
 
 #ifdef __cplusplus
 } /* extern "C" */
