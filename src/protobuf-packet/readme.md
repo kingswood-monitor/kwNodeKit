@@ -5,7 +5,8 @@ This is a schema for a general purpose protofile for transmitting environment da
 To regenerate the schema, run this command from directory `kwNodeKit`:
 
 ```
-python ../Nanopb/generator/nanopb_generator.py -I src/protobuf-packet -D src/protobuf-packet src/protobuf-packet/packet.proto
+python .pio/libdeps/ttgo-lora32-v1/Nanopb/generator/nanopb_generator.py -I .pio/libdeps/ttgo-lora32-v1/kwNodeKit/src/protobuf-packet -D lib/proto .pio/libdeps/ttgo-lora32-v1/kwNodeKit/src/protobuf-packet/packet.proto
+
 ```
 
 There is a compiler namespace DEFINE collision on `atmelavr` platforms with the `UENUM` type. As a workaround, insert the following in `packet.pb.h`:
