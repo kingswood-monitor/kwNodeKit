@@ -1,0 +1,167 @@
+/**
+ * kwLoraSM.ch: Environment Sensor node firmware
+ * Copyright (c) 2020 Richard J. Lyon
+ * 
+ * See LICENSE for terms.
+ */
+// https://randomnerdtutorials.com/esp32-lora-rfm95-transceiver-arduino-ide/
+
+#include "kwLoraSM.h"
+#include "packet.pb.h"
+#include <string>
+
+#include <SPI.h>
+#include <LoRa.h>
+
+using namespace std;
+
+// TTGO LoRa pin assignments
+#define RFM95_CS 18
+#define RFM95_RST 14
+#define RFM95_INT 26
+
+// Constructors
+kwLoraSM::
+    kwLoraSM()
+    : kwSensor(SensorName_LORA), txPower_(13){};
+
+kwLoraSM::
+    kwLoraSM(uint8_t txPower)
+    : kwSensor(SensorName_LORA), txPower_(txPower){};
+
+// kwTransport interface
+
+bool kwLoraSM::
+    startTransport()
+{
+    LoRa.setPins(RFM95_CS, RFM95_RST, RFM95_INT);
+
+    while (!LoRa.begin(frequency_))
+    {
+        Serial.println(".");
+        delay(500);
+    }
+    LoRa.onReceive(onReceive);
+    LoRa.onTxDone(onTxDone);
+    LoRa_rxMode();
+
+    return true;
+};
+
+bool kwLoraSM::
+    sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten)
+{
+    LoRa_sendMessage(packetBuffer, bytesWritten);
+
+    Serial.println("Sent Message");
+    transportLed.blink();
+
+    return true;
+};
+
+// kwSensor interface
+
+bool kwLoraSM::
+    startSensor()
+{
+    isInstalled_ = true;
+    return isInstalled_;
+}
+bool kwLoraSM::
+    readAndEncodeMeasurements(
+        pb_ostream_t *ostream,
+        const pb_field_iter_t *field,
+        void *const *arg,
+        bool rbeFlag)
+{
+    bool result = false;
+
+    Measurement measurement = Measurement_init_default;
+    measurement.sensor = name_;
+
+    // rssi
+    result |= processMeasurement(
+        measurement,
+        LoRa.packetRssi(),
+        rbeRSSIConfig,
+        rbeFlag,
+        Measurement_rssi_tag,
+        "RSSI",
+        ostream,
+        field);
+
+    // snr
+    result |= processMeasurement(
+        measurement,
+        LoRa.packetSnr(),
+        rbeSNRConfig,
+        rbeFlag,
+        Measurement_snr_tag,
+        "SNR",
+        ostream,
+        field);
+
+    // frequency error
+    result |= processMeasurement(
+        measurement,
+        LoRa.packetFrequencyError(),
+        rbeFrequencyErrorConfig,
+        rbeFlag,
+        Measurement_frequency_error_tag,
+        "FE",
+        ostream,
+        field);
+
+    return result;
+}
+
+// helper functions
+
+//////////
+void LoRa_sendMessage(String message)
+{
+    LoRa_txMode();        // set tx mode
+    LoRa.beginPacket();   // start packet
+    LoRa.print(message);  // add payload
+    LoRa.endPacket(true); // finish packet and send it
+}
+//////////
+
+void LoRa_sendMessage(uint8_t *buffer, size_t size)
+{
+    LoRa_txMode();                             // set tx mode
+    LoRa.beginPacket();                        // start packet
+    LoRa.write((const uint8_t *)buffer, size); // add payload
+    LoRa.endPacket(true);                      // finish packet and send it
+}
+
+void LoRa_rxMode()
+{
+    LoRa.enableInvertIQ(); // active invert I and Q signals
+    LoRa.receive();        // set receive mode
+}
+
+void LoRa_txMode()
+{
+    LoRa.idle();            // set standby mode
+    LoRa.disableInvertIQ(); // normal mode
+}
+
+void onReceive(int packetSize)
+{
+    String message = "";
+
+    while (LoRa.available())
+    {
+        message += (char)LoRa.read();
+    }
+
+    Serial.print("Node Receive: ");
+    Serial.println(message);
+}
+
+void onTxDone()
+{
+    Serial.println("TxDone");
+    LoRa_rxMode();
+}
