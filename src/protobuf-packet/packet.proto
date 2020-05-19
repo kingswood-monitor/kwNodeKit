@@ -4,6 +4,7 @@ enum NodeType {
    UnknownType = 0;
    environment = 1; 
    energy = 2;
+   bridge = 3;
 }
 
 enum NodeLocation {

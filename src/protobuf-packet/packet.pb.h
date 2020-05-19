@@ -17,7 +17,8 @@ extern "C" {
 typedef enum _NodeType {
     NodeType_UnknownType = 0,
     NodeType_environment = 1,
-    NodeType_energy = 2
+    NodeType_energy = 2,
+    NodeType_bridge = 3
 } NodeType;
 
 typedef enum _NodeLocation {
@@ -81,8 +82,8 @@ typedef struct _Packet {
 
 /* Helper constants for enums */
 #define _NodeType_MIN NodeType_UnknownType
-#define _NodeType_MAX NodeType_energy
-#define _NodeType_ARRAYSIZE ((NodeType)(NodeType_energy+1))
+#define _NodeType_MAX NodeType_bridge
+#define _NodeType_ARRAYSIZE ((NodeType)(NodeType_bridge+1))
 
 #define _NodeLocation_MIN NodeLocation_unknownLocation
 #define _NodeLocation_MAX NodeLocation_electricity
