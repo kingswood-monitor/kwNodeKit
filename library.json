@@ -14,7 +14,7 @@
     "dependencies": {
         "nanopb": "https://github.com/nanopb/nanopb.git",
         "arduino-DHT": "https://github.com/markruys/arduino-DHT.git",
-        "ClosedCube_HDC1080_Arduino": "https://github.com/closedcube/ClosedCube_HDC1080_Arduino.git",
+        "ClosedCube HDC1080": "https://github.com/closedcube/ClosedCube_HDC1080_Arduino.git",
         "arduino-VEML7700": "https://github.com/tedyapo/arduino-VEML7700.git",
         "RadioHead": "https://github.com/kingswood-monitor/RadioHead.git",
         "arduino-LoRa": "https://github.com/sandeepmistry/arduino-LoRa.git",
