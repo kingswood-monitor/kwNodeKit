@@ -30,7 +30,8 @@
             "-I src/base",
             "-I src/sensors",
             "-I src/transport",
-            "-I src/util"
+            "-I src/util",
+            "-I src/protobuf-packet"
         ]
     }
 }
