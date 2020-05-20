@@ -4,5 +4,6 @@
 kwTransport::
     kwTransport()
 {
+    pinMode(LED_BUILTIN, OUTPUT);
     transportLed = kwLED();
 };
