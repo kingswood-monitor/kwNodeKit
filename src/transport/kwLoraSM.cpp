@@ -44,7 +44,7 @@ bool kwLoraSM::
     LoRa.onTxDone(onTxDone);
     LoRa_rxMode();
 
-    blink(3);
+    transportLed.blink(3);
 
     return true;
 };
