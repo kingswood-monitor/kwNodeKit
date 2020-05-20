@@ -33,7 +33,7 @@ public:
     int16_t freqError();
 
 private:
-    uint8_t txPower_ = {23}; // valid levels +5 to +23
+    uint8_t txPower_ = {17}; // valid levels +2 to +20
     double frequency_ = {868E6};
 };
 

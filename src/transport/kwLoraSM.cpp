@@ -16,9 +16,9 @@
 using namespace std;
 
 // TTGO LoRa pin assignments
-#define RFM95_CS 18
-#define RFM95_RST 14
-#define RFM95_INT 26
+#define PIN_CS 18
+#define PIN_RST 14
+#define PIN_INT 26
 
 // Constructors
 kwLoraSM::
@@ -34,8 +34,7 @@ kwLoraSM::
 bool kwLoraSM::
     startTransport()
 {
-    LoRa.setPins(RFM95_CS, RFM95_RST, RFM95_INT);
-
+    LoRa.setPins(PIN_CS, PIN_RST, PIN_INT);
     while (!LoRa.begin(frequency_))
     {
         Serial.println(".");
@@ -44,6 +43,8 @@ bool kwLoraSM::
     LoRa.onReceive(onReceive);
     LoRa.onTxDone(onTxDone);
     LoRa_rxMode();
+
+    transportLed.blink(3);
 
     return true;
 };
@@ -116,16 +117,6 @@ bool kwLoraSM::
 }
 
 // helper functions
-
-//////////
-void LoRa_sendMessage(String message)
-{
-    LoRa_txMode();        // set tx mode
-    LoRa.beginPacket();   // start packet
-    LoRa.print(message);  // add payload
-    LoRa.endPacket(true); // finish packet and send it
-}
-//////////
 
 void LoRa_sendMessage(uint8_t *buffer, size_t size)
 {
