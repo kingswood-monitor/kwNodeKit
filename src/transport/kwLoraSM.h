@@ -42,3 +42,5 @@ void onTxDone();
 void LoRa_rxMode();
 void LoRa_txMode();
 void LoRa_sendMessage(uint8_t *buffer, size_t size);
+
+void blink(uint8_t times = 1, uint16_t millis = 100);

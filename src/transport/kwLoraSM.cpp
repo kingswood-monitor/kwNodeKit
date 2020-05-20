@@ -44,7 +44,7 @@ bool kwLoraSM::
     LoRa.onTxDone(onTxDone);
     LoRa_rxMode();
 
-    transportLed.blink(3);
+    blink(3);
 
     return true;
 };
@@ -52,11 +52,8 @@ bool kwLoraSM::
 bool kwLoraSM::
     sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten)
 {
+    Serial.print("Sending packet: ");
     LoRa_sendMessage(packetBuffer, bytesWritten);
-
-    Serial.println("Sent Message");
-    transportLed.blink();
-
     return true;
 };
 
@@ -124,6 +121,10 @@ void LoRa_sendMessage(uint8_t *buffer, size_t size)
     LoRa.beginPacket();                        // start packet
     LoRa.write((const uint8_t *)buffer, size); // add payload
     LoRa.endPacket(true);                      // finish packet and send it
+
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
 }
 
 void LoRa_rxMode()
@@ -155,4 +156,15 @@ void onTxDone()
 {
     Serial.println("TxDone");
     LoRa_rxMode();
+}
+
+void blink(uint8_t times, uint16_t millis)
+{
+    for (int i = 0; i < times; i++)
+    {
+        digitalWrite(LED_BUILTIN, HIGH);
+        delay(millis);
+        digitalWrite(LED_BUILTIN, LOW);
+        delay(millis);
+    }
 }
