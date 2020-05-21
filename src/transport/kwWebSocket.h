@@ -7,6 +7,7 @@
 
 #include "kwTransport.h"
 #include <ArduinoWebsockets.h>
+#include <WiFi.h>
 
 class kwWebSocket : public kwTransport
 {
@@ -16,10 +17,10 @@ public:
     kwWebSocket(
         const char *ssid,
         const char *password,
-        WSInterfaceString host, int port,
-        WSInterfaceString path)
+        websockets::WSInterfaceString host, int port,
+        websockets::WSInterfaceString path);
 
-        // kwTransport interface
-        bool startTransport();
+    // kwTransport interface
+    bool startTransport();
     bool sendPacket(uint16_t packetID, uint8_t *packetBuffer, uint8_t bytesWritten);
-}
+};

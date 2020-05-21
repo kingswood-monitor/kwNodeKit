@@ -20,7 +20,10 @@
         "arduino-LoRa": "https://github.com/sandeepmistry/arduino-LoRa.git",
         "ArduinoWebsockets": "https://github.com/gilmaimon/ArduinoWebsockets.git",
         "Wire": ">0",
-        "SPI": ">0"
+        "SPI": ">0",
+        "WiFi": ">0",
+        "HTTPClient": ">0",
+        "WiFiClientSecure": ">0"
     },
     "examples": [
         "[Ee]xamples/*.cpp"
