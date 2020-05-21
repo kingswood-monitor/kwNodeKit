@@ -18,12 +18,7 @@
         "arduino-VEML7700": "https://github.com/tedyapo/arduino-VEML7700.git",
         "RadioHead": "https://github.com/kingswood-monitor/RadioHead.git",
         "arduino-LoRa": "https://go github.com/sandeepmistry/arduino-LoRa.git",
-        "ArduinoWebsockets": "https://github.com/gilmaimon/ArduinoWebsockets.git",
-        "name": "Wire",
-        "name": "SPI"",
-        "name": "WiFi",
-        "name": "HTTPClient",
-        "name": "WiFiClientSecure"
+        "ArduinoWebsockets": "https://github.com/gilmaimon/ArduinoWebsockets.git"
     },
     "examples": [
         "[Ee]xamples/*.cpp"
