@@ -18,6 +18,7 @@
         "arduino-VEML7700": "https://github.com/tedyapo/arduino-VEML7700.git",
         "RadioHead": "https://github.com/kingswood-monitor/RadioHead.git",
         "arduino-LoRa": "https://github.com/sandeepmistry/arduino-LoRa.git",
+        "ArduinoWebsockets": "https://github.com/gilmaimon/ArduinoWebsockets.git",
         "Wire": ">0",
         "SPI": ">0"
     },

@@ -1,5 +1,5 @@
 /**
- * kwLora.ch: Environment Sensor node firmware
+ * kwLora.h: Environment Sensor node firmware
  * Copyright (c) 2020 Richard J. Lyon
  * 
  * See LICENSE for terms.
