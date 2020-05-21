@@ -9,12 +9,13 @@
 #include "kwSensor.h"
 #include "LoRa.h"
 
+#define DEFAULT_POWER 17
+
 class kwLoraSM : public kwTransport, public kwSensor
 {
 public:
     // constructors
     kwLoraSM();
-    kwLoraSM(uint8_t txPower);
 
     // kwTransport interface
     bool startTransport();
@@ -29,6 +30,7 @@ public:
         bool rbeFlag);
 
     // kwLoraSensor methods
+    void setPower(uint8_t txPower);
     int16_t rssi();
     int16_t snr();
     int16_t freqError();
@@ -37,7 +39,7 @@ public:
     int parsePacket();
 
 private:
-    uint8_t txPower_ = {17}; // valid levels +2 to +20
+    uint8_t txPower_ = {DEFAULT_POWER}; // valid levels +2 to +20
     double frequency_ = {868E6};
     void LoRa_rxMode();
     void LoRa_txMode();
