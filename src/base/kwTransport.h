@@ -8,6 +8,7 @@
 
 #include <Arduino.h>
 #include "kwLED.h"
+#include "packet.pb.h"
 
 /**
  * Base class for node radios.
@@ -19,6 +20,12 @@ public:
     kwTransport();
     virtual bool startTransport() = 0;                                        // start the radio
     virtual bool sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten) = 0; // send a packet
+    void isGateway(bool flag);
+    bool isGateway();
+
 protected:
     kwLED transportLed;
+
+private:
+    bool _isGateway = false;
 };

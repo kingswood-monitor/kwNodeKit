@@ -111,15 +111,31 @@ bool kwLoraSM::
 void kwLoraSM::
     LoRa_rxMode()
 {
-    LoRa.disableInvertIQ(); // normal mode
-    LoRa.receive();         // set receive mode
+    if (isGateway())
+    {
+        LoRa.disableInvertIQ(); // normal mode
+        LoRa.receive();         // set receive mode
+    }
+    else
+    {
+        LoRa.enableInvertIQ(); // active invert I and Q signals
+        LoRa.receive();        // set receive mode
+    }
 }
 
 void kwLoraSM::
     LoRa_txMode()
 {
-    LoRa.idle();           // set standby mode
-    LoRa.enableInvertIQ(); // active invert I and Q signals
+    if (isGateway())
+    {
+        LoRa.idle();           // set standby mode
+        LoRa.enableInvertIQ(); // active invert I and Q signals
+    }
+    else
+    {
+        LoRa.idle();            // set standby mode
+        LoRa.disableInvertIQ(); // normal mode
+    }
 }
 
 void kwLoraSM::
