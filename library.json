@@ -17,13 +17,13 @@
         "ClosedCube HDC1080": "https://github.com/closedcube/ClosedCube_HDC1080_Arduino.git",
         "arduino-VEML7700": "https://github.com/tedyapo/arduino-VEML7700.git",
         "RadioHead": "https://github.com/kingswood-monitor/RadioHead.git",
-        "arduino-LoRa": "https://github.com/sandeepmistry/arduino-LoRa.git",
+        "arduino-LoRa": "https://go github.com/sandeepmistry/arduino-LoRa.git",
         "ArduinoWebsockets": "https://github.com/gilmaimon/ArduinoWebsockets.git",
-        "Wire": ">0",
-        "SPI": ">0",
-        "WiFi": ">0",
-        "HTTPClient": ">0",
-        "WiFiClientSecure": ">0"
+        "name": "Wire",
+        "name": "SPI"",
+        "name": "WiFi",
+        "name": "HTTPClient",
+        "name": "WiFiClientSecure"
     },
     "examples": [
         "[Ee]xamples/*.cpp"
