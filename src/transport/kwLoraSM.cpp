@@ -41,7 +41,7 @@ bool kwLoraSM::
         delay(500);
     }
     LoRa.onReceive(onReceive);
-    LoRa.onTxDone(onTxDone);
+    // LoRa.onTxDone(onTxDone);
     LoRa_rxMode();
 
     transportLed.blink(3);
@@ -113,9 +113,30 @@ bool kwLoraSM::
     return result;
 }
 
-// helper functions
+// private methods
+void kwLoraSM::
+    LoRa_rxMode()
+{
+    LoRa.disableInvertIQ(); // normal mode
+    LoRa.receive();         // set receive mode
+}
 
-void LoRa_sendMessage(uint8_t *buffer, size_t size)
+void kwLoraSM::
+    LoRa_txMode()
+{
+    LoRa.idle();           // set standby mode
+    LoRa.enableInvertIQ(); // active invert I and Q signals
+}
+
+void kwLoraSM::
+    onTxDone()
+{
+    Serial.println("TxDone");
+    // LoRa_rxMode();
+}
+
+void kwLoraSM::
+    LoRa_sendMessage(uint8_t *buffer, size_t size)
 {
     LoRa_txMode();                             // set tx mode
     LoRa.beginPacket();                        // start packet
@@ -127,18 +148,29 @@ void LoRa_sendMessage(uint8_t *buffer, size_t size)
     digitalWrite(LED_BUILTIN, LOW);
 }
 
-void LoRa_rxMode()
+///////////
+int kwLoraSM::
+    parsePacket()
 {
-    LoRa.enableInvertIQ(); // active invert I and Q signals
-    LoRa.receive();        // set receive mode
-}
+    int packetSize = LoRa.parsePacket();
+    if (packetSize)
+    {
+        // received a packet
+        Serial.print("Received packet '");
 
-void LoRa_txMode()
-{
-    LoRa.idle();            // set standby mode
-    LoRa.disableInvertIQ(); // normal mode
-}
+        // read packet
+        while (LoRa.available())
+        {
+            Serial.print((char)LoRa.read());
+        }
 
+        // print RSSI of packet
+        Serial.print("' with RSSI ");
+        Serial.println(LoRa.packetRssi());
+    }
+    return 0;
+}
+////////////
 void onReceive(int packetSize)
 {
     String message = "";
@@ -148,15 +180,11 @@ void onReceive(int packetSize)
         message += (char)LoRa.read();
     }
 
-    Serial.print("Node Receive: ");
+    Serial.print("WOOOHOOOOOO   Node Receive: ");
     Serial.println(message);
 }
-
-void onTxDone()
-{
-    Serial.println("TxDone");
-    LoRa_rxMode();
-}
+////////
+// helper functions
 
 void blink(uint8_t times, uint16_t millis)
 {

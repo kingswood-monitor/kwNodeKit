@@ -7,6 +7,7 @@
 
 #include "kwTransport.h"
 #include "kwSensor.h"
+#include "LoRa.h"
 
 class kwLoraSM : public kwTransport, public kwSensor
 {
@@ -32,15 +33,17 @@ public:
     int16_t snr();
     int16_t freqError();
 
+    /////////
+    int parsePacket();
+
 private:
     uint8_t txPower_ = {17}; // valid levels +2 to +20
     double frequency_ = {868E6};
+    void LoRa_rxMode();
+    void LoRa_txMode();
+    void LoRa_sendMessage(uint8_t *buffer, size_t size);
+    static void onTxDone();
 };
 
-void onReceive(int packetSize);
-void onTxDone();
-void LoRa_rxMode();
-void LoRa_txMode();
-void LoRa_sendMessage(uint8_t *buffer, size_t size);
-
 void blink(uint8_t times = 1, uint16_t millis = 100);
+void onReceive(int packetSize);
