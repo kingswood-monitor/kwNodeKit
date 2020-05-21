@@ -21,13 +21,7 @@ using namespace std;
 #define PIN_INT 26
 
 // Constructors
-kwLoraSM::
-    kwLoraSM()
-    : kwSensor(SensorName_LORA), txPower_(13){};
-
-kwLoraSM::
-    kwLoraSM(uint8_t txPower)
-    : kwSensor(SensorName_LORA), txPower_(txPower){};
+kwLoraSM::kwLoraSM() : kwSensor(SensorName_LORA){};
 
 // kwTransport interface
 
