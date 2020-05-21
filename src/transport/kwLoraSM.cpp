@@ -34,7 +34,7 @@ bool kwLoraSM::
         Serial.println(".");
         delay(500);
     }
-    LoRa.onReceive(onReceive);
+    // LoRa.onReceive(onReceive);
     // LoRa.onTxDone(onTxDone);
     LoRa_rxMode();
 
@@ -152,48 +152,43 @@ void kwLoraSM::
     LoRa.beginPacket();                        // start packet
     LoRa.write((const uint8_t *)buffer, size); // add payload
     LoRa.endPacket(true);                      // finish packet and send it
-
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
 }
 
-///////////
-int kwLoraSM::
-    parsePacket()
+uint8_t kwLoraSM::
+    parsePacket(uint8_t *buffer)
 {
     int packetSize = LoRa.parsePacket();
     if (packetSize)
     {
         // received a packet
-        Serial.print("Received packet '");
 
-        // read packet
+        uint8_t i = 0;
         while (LoRa.available())
         {
-            Serial.print((char)LoRa.read());
+            buffer[i++] = LoRa.read();
         }
 
-        // print RSSI of packet
-        Serial.print("' with RSSI ");
+        Serial.print("Received packet: bytes=");
+        Serial.print(packetSize);
+        Serial.print(", RSSI=");
         Serial.println(LoRa.packetRssi());
     }
-    return 0;
+    return packetSize;
 }
-////////////
+
 void onReceive(int packetSize)
 {
-    String message = "";
+    // String message = "";
 
-    while (LoRa.available())
-    {
-        message += (char)LoRa.read();
-    }
+    // while (LoRa.available())
+    // {
+    //     message += (char)LoRa.read();
+    // }
 
-    Serial.print("WOOOHOOOOOO   Node Receive: ");
-    Serial.println(message);
+    // Serial.print("WOOOHOOOOOO   Node Receive: ");
+    // Serial.println(message);
 }
-////////
+
 // helper functions
 
 void blink(uint8_t times, uint16_t millis)

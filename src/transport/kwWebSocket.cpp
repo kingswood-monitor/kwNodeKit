@@ -1,8 +1,5 @@
 #include "kwWebSocket.h"
 
-using namespace websockets;
-WebsocketsClient client;
-
 void onMessageCallback(WebsocketsMessage message);
 // void onEventsCallback(WebsocketsEvent event, String data);
 
@@ -33,26 +30,28 @@ bool kwWebSocket::
     Serial.print("Connected, IP: ");
     Serial.println(WiFi.localIP());
 
+    transportLed.activeLow(); // set up for "negative" flash
+
     // run callback when messages are received
-    client.onMessage(onMessageCallback);
+    _client.onMessage(onMessageCallback);
 
     // run callback when events are occuring
     // client.onEvent(onEventsCallback);
 
     // connect to websocket server
     Serial.print("INFO: Connecting to websocket");
-    while (!client.available())
+    while (!_client.available())
     {
-        client.connect(_websockets_server_host, _websockets_server_port, "/");
+        _client.connect(_websockets_server_host, _websockets_server_port, _path);
         delay(1000);
     }
     Serial.println();
 
     // Send a message
-    client.send("Hello Server");
+    _client.send("Hello Server");
 
     // Send a ping
-    client.ping();
+    _client.ping();
 
     return true;
 }
@@ -60,6 +59,16 @@ bool kwWebSocket::
 bool kwWebSocket::
     sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten)
 {
+    while (!_client.available())
+    {
+        transportLed.toggle();
+        _client.connect(_websockets_server_host, _websockets_server_port, _path);
+        delay(1000);
+    }
+
+    _client.sendBinary((char *)packetBuffer, bytesWritten);
+    transportLed.blink();
+
     return true;
 }
 

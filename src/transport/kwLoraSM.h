@@ -36,7 +36,7 @@ public:
     int16_t freqError();
 
     /////////
-    int parsePacket();
+    uint8_t parsePacket(uint8_t *buffer);
 
 private:
     uint8_t txPower_ = {DEFAULT_POWER}; // valid levels +2 to +20

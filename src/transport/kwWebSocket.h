@@ -9,6 +9,8 @@
 #include <ArduinoWebsockets.h>
 #include <WiFi.h>
 
+using namespace websockets;
+
 class kwWebSocket : public kwTransport
 {
 public:
@@ -25,6 +27,7 @@ public:
     bool sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten);
 
 private:
+    WebsocketsClient _client;
     const char *_ssid = {nullptr};
     const char *_password = {nullptr};
     const char *_websockets_server_host = {nullptr};
