@@ -13,14 +13,21 @@ class kwWebSocket : public kwTransport
 {
 public:
     // constructor
-    kwWebSocket();
     kwWebSocket(
         const char *ssid,
         const char *password,
-        websockets::WSInterfaceString host, int port,
-        websockets::WSInterfaceString path);
+        const char *websockets_server_host,
+        const uint16_t websockets_server_port,
+        String path);
 
     // kwTransport interface
     bool startTransport();
-    bool sendPacket(uint16_t packetID, uint8_t *packetBuffer, uint8_t bytesWritten);
+    bool sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten);
+
+private:
+    const char *_ssid = {nullptr};
+    const char *_password = {nullptr};
+    const char *_websockets_server_host = {nullptr};
+    const uint16_t _websockets_server_port = {0};
+    String _path = "/";
 };

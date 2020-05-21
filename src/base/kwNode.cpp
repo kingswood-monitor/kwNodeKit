@@ -8,11 +8,14 @@
 #include "kwNode.h"
 
 #define MAX_PROTOBUF_BYTES 120
+#define MAX_TRANSPORTS 2
 #define MAX_SENSORS 4
 
-kwTransport *transport;
+kwTransport *transports[MAX_TRANSPORTS];
 kwSensor *sensors[MAX_SENSORS];
+
 uint8_t sensorCount;
+uint8_t transportCount;
 
 bool g_rbeFlag;
 
@@ -37,12 +40,16 @@ void kwNode::
     addSensor(kwSensor *sensor) { sensors[sensorCount++] = sensor; }
 
 void kwNode::
-    addTransport(kwTransport *theTransport) { transport = theTransport; }
+    addTransport(kwTransport *transport) { transports[transportCount++] = transport; }
 
 void kwNode::
     start()
 {
-    transport->startTransport();
+    for (int j = 0; j < transportCount; ++j)
+    {
+        transports[j]->startTransport();
+    }
+
     for (int i = 0; i < sensorCount; ++i)
     {
         sensors[i]->startSensor();
