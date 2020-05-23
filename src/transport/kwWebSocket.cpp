@@ -8,9 +8,8 @@ kwWebSocket::
         const char *ssid,
         const char *password,
         const char *websockets_server_host,
-        const uint16_t websockets_server_port,
-        String path)
-    : _ssid(ssid), _password(password), _websockets_server_host(websockets_server_host), _websockets_server_port(websockets_server_port), _path(path)
+        const uint16_t websockets_server_port)
+    : _ssid(ssid), _password(password), _websockets_server_host(websockets_server_host), _websockets_server_port(websockets_server_port)
 {
 }
 
@@ -42,7 +41,7 @@ bool kwWebSocket::
     Serial.print("INFO: Connecting to websocket");
     while (!_client.available())
     {
-        _client.connect(_websockets_server_host, _websockets_server_port, _path);
+        _client.connect(_websockets_server_host, _websockets_server_port, "/");
         delay(1000);
     }
     Serial.println();
@@ -62,7 +61,7 @@ bool kwWebSocket::
     while (!_client.available())
     {
         transportLed.toggle();
-        _client.connect(_websockets_server_host, _websockets_server_port, _path);
+        _client.connect(_websockets_server_host, _websockets_server_port, "/");
         delay(1000);
     }
 

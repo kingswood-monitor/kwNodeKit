@@ -19,8 +19,7 @@ public:
         const char *ssid,
         const char *password,
         const char *websockets_server_host,
-        const uint16_t websockets_server_port,
-        String path);
+        const uint16_t websockets_server_port);
 
     // kwTransport interface
     bool startTransport();
@@ -32,5 +31,4 @@ private:
     const char *_password = {nullptr};
     const char *_websockets_server_host = {nullptr};
     const uint16_t _websockets_server_port = {0};
-    String _path = "/";
 };
