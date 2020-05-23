@@ -47,5 +47,4 @@ private:
     static void onTxDone();
 };
 
-void blink(uint8_t times = 1, uint16_t millis = 100);
 void onReceive(int packetSize);

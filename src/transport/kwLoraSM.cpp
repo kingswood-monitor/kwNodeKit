@@ -20,10 +20,11 @@ using namespace std;
 #define PIN_RST 14
 #define PIN_INT 26
 
-// Constructors
+// constructors /////////////////////////////////////////////////////////////////////
+
 kwLoraSM::kwLoraSM() : kwSensor(SensorName_LORA){};
 
-// kwTransport interface
+// kwTransport interface ////////////////////////////////////////////////////////////
 
 bool kwLoraSM::
     startTransport()
@@ -51,7 +52,7 @@ bool kwLoraSM::
     return true;
 };
 
-// kwSensor interface
+// kwSensor interface ///////////////////////////////////////////////////////////////
 
 bool kwLoraSM::
     startSensor()
@@ -107,7 +108,8 @@ bool kwLoraSM::
     return result;
 }
 
-// private methods
+// private methods //////////////////////////////////////////////////////////////////
+
 void kwLoraSM::
     LoRa_rxMode()
 {
@@ -168,14 +170,17 @@ uint8_t kwLoraSM::
             buffer[i++] = LoRa.read();
         }
 
-        Serial.print("Received packet: bytes=");
-        Serial.print(packetSize);
-        Serial.print(", RSSI=");
-        Serial.println(LoRa.packetRssi());
+        assert(i == packetSize);
+
+        // Serial.print("Received packet: bytes=");
+        // Serial.print(packetSize);
+        // Serial.print(", RSSI=");
+        // Serial.println(LoRa.packetRssi());
     }
     return packetSize;
 }
 
+// helper
 void onReceive(int packetSize)
 {
     // String message = "";
@@ -189,15 +194,4 @@ void onReceive(int packetSize)
     // Serial.println(message);
 }
 
-// helper functions
-
-void blink(uint8_t times, uint16_t millis)
-{
-    for (int i = 0; i < times; i++)
-    {
-        digitalWrite(LED_BUILTIN, HIGH);
-        delay(millis);
-        digitalWrite(LED_BUILTIN, LOW);
-        delay(millis);
-    }
-}
+// helpers //////////////////////////////////////////////////////////////////////////////

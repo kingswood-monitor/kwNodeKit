@@ -8,8 +8,8 @@
 #include "kwNode.h"
 
 #define MAX_PROTOBUF_BYTES 120
-#define MAX_TRANSPORTS 2
 #define MAX_SENSORS 4
+#define MAX_TRANSPORTS 2
 
 kwTransport *transports[MAX_TRANSPORTS];
 kwSensor *sensors[MAX_SENSORS];
@@ -18,6 +18,8 @@ uint8_t sensorCount;
 uint8_t transportCount;
 
 bool g_rbeFlag;
+
+// constructors ////////////////////////////////////////////////////////////////////////////
 
 kwNode::
     kwNode(){};
@@ -32,6 +34,8 @@ kwNode::
     meta_.chip_id = chipId;
     strcpy(meta_.firmware_version, firmwareVersion);
 }
+
+// public methods ////////////////////////////////////////////////////////////////////////////
 
 Meta kwNode::
     meta() { return meta_; }
@@ -94,6 +98,8 @@ uint8_t kwNode::
 
     return ostream.bytes_written;
 }
+
+// helpers ////////////////////////////////////////////////////////////////////////////
 
 bool encodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg)
 {
