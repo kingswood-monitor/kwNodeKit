@@ -20,6 +20,9 @@ using namespace std;
 #define PIN_RST 14
 #define PIN_INT 26
 
+/* forward declarations */
+void vPrintPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten);
+
 // constructors /////////////////////////////////////////////////////////////////////
 
 kwLoraSM::kwLoraSM() : kwSensor(SensorName_LORA){};
@@ -45,10 +48,13 @@ bool kwLoraSM::
 };
 
 bool kwLoraSM::
-    sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten)
+    sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
 {
-    Serial.print("Sending packet: ");
     LoRa_sendMessage(packetBuffer, bytesWritten);
+    
+    /* print debug info */
+    vPrintPacket(uiTimeStamp, packetBuffer, bytesWritten);
+
     return true;
 };
 
@@ -195,3 +201,23 @@ void onReceive(int packetSize)
 }
 
 // helpers //////////////////////////////////////////////////////////////////////////////
+
+
+/* utility function to print packet to serial */
+void vPrintPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
+{
+    char hexCar[2];
+    
+    Serial.print(F("\n["));
+    Serial.print(uiTimeStamp);
+    Serial.print(F("] SEND "));
+
+    for (int i = 0; i < bytesWritten; i++)
+        {
+            sprintf(hexCar, "%02X", packetBuffer[i]);
+            Serial.print(hexCar);
+        }
+    Serial.print(F(" ("));
+    Serial.print(bytesWritten);
+    Serial.println(F("B)"));
+}
