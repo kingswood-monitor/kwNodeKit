@@ -101,6 +101,7 @@ uint8_t kwNode::
 
 // helpers ////////////////////////////////////////////////////////////////////////////
 
+/* iterate through active sensors, read measurements, and encode */
 bool encodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg)
 {
     for (int i = 0; i < sensorCount; ++i)
