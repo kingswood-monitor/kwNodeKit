@@ -33,7 +33,7 @@ bool processMeasurement(
     const pb_field_iter_t *field)
 {
     kwSensor::Reading reading = makeReading(value, rbeConfig);
-    if (!rbeFlag || (rbeFlag & reading.hasChanged))
+    if (!rbeFlag || (rbeFlag && reading.hasChanged))
     {
         measurement.which_type = measurementTag;
         measurement.type.temperature = reading.value;
