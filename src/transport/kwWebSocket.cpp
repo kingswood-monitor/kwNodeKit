@@ -52,7 +52,7 @@ bool kwWebSocket::
 }
 
 bool kwWebSocket::
-    sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten)
+    sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
 {
     while (!_client.available())
     {

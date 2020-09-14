@@ -23,7 +23,7 @@ public:
 
     // kwTransport interface
     bool startTransport();
-    bool sendPacket(uint8_t *packetBuffer, uint8_t bytesWritten);
+    bool sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten);
 
 private:
     WebsocketsClient _client;
