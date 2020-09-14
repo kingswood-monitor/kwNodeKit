@@ -1,53 +1,75 @@
-#include "debug.h"
+/**
+ * kwNode.cpp
+ * Copyright (c) 2020 Richard J. Lyon
+ * 
+ * See LICENSE for terms.
+ */
 
 #include <Arduino.h>
-
+#include "kwNode.h"
 #include <pb_encode.h>
 #include "packet.pb.h"
+#include "debug.h"
 
-#include "kwNode.h"
-
+/** Maximum size of the buffer holding the encoded protobuf stream. */
 #define MAX_PROTOBUF_BYTES 120
+/** Maximum number of sensors. */
 #define MAX_SENSORS 4
+/** Maximum number of transports. */
 #define MAX_TRANSPORTS 2
 
+/** List and pointer for registering transports */
 kwTransport *transports[MAX_TRANSPORTS];
-kwSensor *sensors[MAX_SENSORS];
-
-uint8_t sensorCount;
 uint8_t transportCount;
 
+/** List and pointer for registering sensors */
+kwSensor *sensors[MAX_SENSORS];
+uint8_t sensorCount;
+
+/** Flag for specifying "report by exception". */
 bool g_rbeFlag;
 
-// constructors ////////////////////////////////////////////////////////////////////////////
+/*-----------------------------------------------------------
+ * CONSTRUCTORS
+ *----------------------------------------------------------*/
 
-kwNode::
-    kwNode(){};
+kwNode::kwNode(){};
 
-kwNode::
-    kwNode(NodeLocation location, NodeType type, uint8_t chipId, const char *firmwareVersion)
+kwNode::kwNode(
+    NodeLocation location,
+    NodeType type,
+    uint8_t chipId,
+    const char *firmwareVersion)
 {
     sensorCount = 0;
 
+    // Build the metadata structure
     meta_.node_location = location;
     meta_.node_type = type;
     meta_.chip_id = chipId;
     strcpy(meta_.firmware_version, firmwareVersion);
 }
 
-// public methods ////////////////////////////////////////////////////////////////////////////
+/*-----------------------------------------------------------
+ * PUBLIC METHODS
+ *----------------------------------------------------------*/
 
-Meta kwNode::
-    meta() { return meta_; }
+Meta kwNode::meta()
+{
+    return meta_;
+}
 
-void kwNode::
-    addSensor(kwSensor *sensor) { sensors[sensorCount++] = sensor; }
+void kwNode::addSensor(kwSensor *sensor)
+{
+    sensors[sensorCount++] = sensor;
+}
 
-void kwNode::
-    addTransport(kwTransport *transport) { transports[transportCount++] = transport; }
+void kwNode::addTransport(kwTransport *transport)
+{
+    transports[transportCount++] = transport;
+}
 
-void kwNode::
-    start()
+void kwNode::start()
 {
     for (int j = 0; j < transportCount; ++j)
     {
@@ -58,7 +80,7 @@ void kwNode::
     {
         sensors[i]->startSensor();
 
-        // remove sensors that haven't started
+        // Remove sensors that haven't started
         if (!sensors[i]->isInstalled())
         {
             delete sensors[i];
@@ -75,20 +97,24 @@ void kwNode::
     }
 }
 
-uint8_t kwNode::
-    readAndEncodeMeasurements(uint16_t packetID, uint8_t *buffer, bool rbeFlag)
+uint8_t kwNode::readAndEncodeMeasurements(
+    uint16_t packetID,
+    uint8_t *buffer,
+    bool rbeFlag)
 {
     g_rbeFlag = rbeFlag;
 
-    // build packet
+    // Create the stream to hold the encoded bytes
+    pb_ostream_t ostream = pb_ostream_from_buffer(buffer, MAX_PROTOBUF_BYTES);
+
+    // Build the packet definition structure to pass to the encoder
     Packet packet = Packet_init_zero;
     packet.packet_id = packetID;
     packet.has_meta = true;
     packet.meta = meta();
     packet.measurements.funcs.encode = encodeMeasurements;
 
-    // encode packet
-    pb_ostream_t ostream = pb_ostream_from_buffer(buffer, MAX_PROTOBUF_BYTES);
+    // Encode the packet into the stream, or report failure
     if (!pb_encode(&ostream, Packet_fields, &packet))
     {
         Serial.print(F("E:"));
@@ -99,14 +125,19 @@ uint8_t kwNode::
     return ostream.bytes_written;
 }
 
-// helpers ////////////////////////////////////////////////////////////////////////////
+/*-----------------------------------------------------------
+ * HELPERS
+ *----------------------------------------------------------*/
 
-/* iterate through active sensors, read measurements, and encode */
-bool encodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg)
+bool encodeMeasurements(
+    pb_ostream_t *ostream,
+    const pb_field_iter_t *field,
+    void *const *arg)
 {
+    // For each attached sensor
     for (int i = 0; i < sensorCount; ++i)
     {
-        // we've removed uninstalled sensors, so don't need to check if (sensors[i]->isInstalled())
+        //read and encode the sensor's measurements
         sensors[i]->readAndEncodeMeasurements(ostream, field, arg, g_rbeFlag);
     }
     return true;

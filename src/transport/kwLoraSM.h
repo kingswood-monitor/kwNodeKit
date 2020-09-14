@@ -19,6 +19,13 @@ public:
      */
     kwLoraSM();
 
+    /**
+     * Create a new instance of the kwLoraSM class.
+     * 
+     * @param queue: The queue to publish incoming packets on.
+     */
+    kwLoraSM(QueueHandle_t xQueue);
+
     // kwTransport interface
     bool startTransport();
     bool sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten);
@@ -38,6 +45,9 @@ public:
     int16_t freqError();
 
     uint8_t parsePacket(uint8_t *buffer);
+
+    // kwLoraSensor properties
+    QueueHandle_t *xQueue; // Holds received messages for processing
 
 private:
     uint8_t txPower_ = {DEFAULT_POWER}; // valid levels +2 to +20

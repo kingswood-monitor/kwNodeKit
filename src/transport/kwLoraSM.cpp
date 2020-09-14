@@ -22,12 +22,28 @@ using namespace std;
 #define PIN_RST 14
 #define PIN_INT 26
 
+/* Singleton queue */
+static QueueHandle_t receivePacketQueue;
+
 /* forward declarations */
 void vPrintPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten);
 
 // constructors /////////////////////////////////////////////////////////////////////
 
 kwLoraSM::kwLoraSM() : kwSensor(SensorName_LORA){};
+kwLoraSM::kwLoraSM(QueueHandle_t xQueue) : kwSensor(SensorName_LORA)
+{
+    xQueue = xQueue;
+};
+
+// BufferWithLength_t data;
+
+// data.timeStamp = xTaskGetTickCount();
+// data.len = packetSize;
+// for (int i = 0; i < data.len; i++)
+// {
+//     data.data[i] = LoRa.read();
+// }
 
 // kwTransport interface ////////////////////////////////////////////////////////////
 
@@ -187,7 +203,8 @@ uint8_t kwLoraSM::parsePacket(uint8_t *buffer)
 /* interrupt handler if packet received */
 void onReceive(int packetSize)
 {
-    xQueueSendToBackFromISR(receivePacketQueue, packetSize, 0);
+    Serial.println("ISR: Fired");
+    // xQueueSendToBackFromISR(receivePacketQueue, packetSize, 0);
 }
 
 /* utility function to print packet to serial */

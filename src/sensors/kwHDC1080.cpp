@@ -1,5 +1,5 @@
 /**
- * kwHDC1080.cpp: Environment Sensor node firmware
+ * kwHDC1080.cpp
  * Copyright (c) 2020 Richard J. Lyon
  * 
  * See LICENSE for terms.
@@ -10,34 +10,66 @@
 
 #include "kwHDC1080.h"
 
-// kwSensor interface
+/*-----------------------------------------------------------
+ * kwSensor VIRTUAL INTERFACE METHODS
+ *----------------------------------------------------------*/
 
-bool kwHDC1080::
-    startSensor()
+bool kwHDC1080::startSensor()
 {
+    bool isInstalled_ = false;
+
+    /** Start the device */
     hdc1080_.begin(0x40);
+
+    /** If we can read the device id, it must have started */
     if ((hdc1080_.readDeviceId() == 4176))
     {
         isInstalled_ = true;
     }
+
     return isInstalled_;
 }
 
-bool kwHDC1080::
-    readAndEncodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg, bool rbeFlag)
+bool kwHDC1080::readAndEncodeMeasurements(
+    pb_ostream_t *ostream,
+    const pb_field_iter_t *field,
+    void *const *arg,
+    bool rbeFlag)
 {
-    bool result = false;
+    /** Flag to capture that encoding was successful */
+    bool bSuccess = false;
 
+    /** Define a measurement with default values and set the sensor name. */
     Measurement measurement = Measurement_init_default;
     measurement.sensor = name_;
 
-    // temperature
+    //** Get the temperature */
     float current_temperature = hdc1080_.readTemperature();
-    result |= processMeasurement(measurement, current_temperature, rbeTemperatureConfig, rbeFlag, Measurement_temperature_tag, "T", ostream, field);
 
-    // humidity
+    /** Encode it and capture the success*/
+    bSuccess |= processMeasurement(
+        measurement,
+        current_temperature,
+        rbeTemperatureConfig,
+        rbeFlag,
+        Measurement_temperature_tag,
+        "T",
+        ostream,
+        field);
+
+    //** Get the humidity */
     float current_humidity = hdc1080_.readHumidity();
-    result |= processMeasurement(measurement, current_humidity, rbeHumidityConfig, rbeFlag, Measurement_humidity_tag, "H", ostream, field);
 
-    return result;
+    /** Encode it and capture the success*/
+    bSuccess |= processMeasurement(
+        measurement,
+        current_humidity,
+        rbeHumidityConfig,
+        rbeFlag,
+        Measurement_humidity_tag,
+        "H",
+        ostream,
+        field);
+
+    return bSuccess;
 }

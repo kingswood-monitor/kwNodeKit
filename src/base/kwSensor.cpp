@@ -4,23 +4,25 @@
 #include "kwSensor.h"
 #include <pb_encode.h>
 
-// constructors /////////////////////////////////////
+/*-----------------------------------------------------------
+ * CONSTRUCTORS
+ *----------------------------------------------------------*/
 
-kwSensor::
-    kwSensor() {}
+kwSensor::kwSensor() {}
 
-kwSensor::
-    kwSensor(SensorName name) : name_(name) {}
+kwSensor::kwSensor(SensorName name) : name_(name) {}
 
-// methods //////////////////////////////////////////
+/*-----------------------------------------------------------
+ * PUBLIC METHODS
+ *----------------------------------------------------------*/
 
-bool kwSensor::
-    isInstalled() { return isInstalled_; }
+bool kwSensor::isInstalled() { return isInstalled_; }
 
-uint8_t kwSensor::
-    name() { return name_; }
+SensorName kwSensor::name() { return name_; }
 
-// helpers ///////////////////////////////////////////
+/*-----------------------------------------------------------
+ * HELPERS
+ *----------------------------------------------------------*/
 
 bool processMeasurement(
     Measurement &measurement,
