@@ -1,7 +1,7 @@
 /**
  * kwWebSocket.h: Environment Sensor node firmware
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 
@@ -13,19 +13,16 @@ using namespace websockets;
 
 class kwWebSocket : public kwTransport
 {
-public:
+  public:
     // constructor
-    kwWebSocket(
-        const char *ssid,
-        const char *password,
-        const char *websockets_server_host,
-        const uint16_t websockets_server_port);
+    kwWebSocket(const char *ssid, const char *password, const char *websockets_server_host,
+                const uint16_t websockets_server_port);
 
     // kwTransport interface
     bool startTransport();
     bool sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten);
 
-private:
+  private:
     WebsocketsClient _client;
     const char *_ssid = {nullptr};
     const char *_password = {nullptr};

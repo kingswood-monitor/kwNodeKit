@@ -40,6 +40,8 @@ The protobuf specification can be modified and recompiled to suit your own needs
 
 The code is provided as-is and without warranty under the MIT licence. I can be contacted at `richardlyon@fastmail.com`.
 
+https://sourceforge.net/p/cppcheck/wiki/ListOfChecks/
+
 ## Change log
 
 ### 19.05.20 v0.1.0

@@ -1,15 +1,16 @@
 /**
  * kwNode.cpp
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 
 #include <Arduino.h>
-#include "kwNode.h"
 #include <pb_encode.h>
-#include "packet.pb.h"
+
 #include "debug.h"
+#include "kwNode.h"
+#include "packet.pb.h"
 
 /** Maximum size of the buffer holding the encoded protobuf stream. */
 #define MAX_PROTOBUF_BYTES 120
@@ -35,19 +36,15 @@ bool g_rbeFlag;
 
 kwNode::kwNode(){};
 
-kwNode::kwNode(
-    NodeLocation location,
-    NodeType type,
-    uint8_t chipId,
-    const char *firmwareVersion)
+kwNode::kwNode(NodeLocation location, NodeType type, uint8_t chipId, const char *firmwareVersion)
 {
     sensorCount = 0;
 
     // Build the metadata structure
-    meta_.node_location = location;
-    meta_.node_type = type;
-    meta_.chip_id = chipId;
-    strcpy(meta_.firmware_version, firmwareVersion);
+    nodeMeta.node_location = location;
+    nodeMeta.node_type = type;
+    nodeMeta.chip_id = chipId;
+    strcpy(nodeMeta.firmware_version, firmwareVersion);
 }
 
 /*-----------------------------------------------------------
@@ -56,7 +53,7 @@ kwNode::kwNode(
 
 Meta kwNode::meta()
 {
-    return meta_;
+    return nodeMeta;
 }
 
 void kwNode::addSensor(kwSensor *sensor)
@@ -106,15 +103,12 @@ void kwNode::start()
     }
 }
 
-uint8_t kwNode::readAndEncodeMeasurements(
-    uint16_t packetID,
-    uint8_t *buffer,
-    bool rbeFlag)
+uint8_t kwNode::readAndEncodeMeasurements(uint16_t packetID, std::array<uint8_t, 255> &buffer, bool rbeFlag)
 {
     g_rbeFlag = rbeFlag;
 
     // Create the stream to hold the encoded bytes
-    pb_ostream_t ostream = pb_ostream_from_buffer(buffer, MAX_PROTOBUF_BYTES);
+    pb_ostream_t ostream = pb_ostream_from_buffer(buffer.data(), MAX_PROTOBUF_BYTES);
 
     // Build the packet definition structure to pass to the encoder
     Packet packet = Packet_init_zero;
@@ -138,15 +132,12 @@ uint8_t kwNode::readAndEncodeMeasurements(
  * HELPERS
  *----------------------------------------------------------*/
 
-bool encodeMeasurements(
-    pb_ostream_t *ostream,
-    const pb_field_iter_t *field,
-    void *const *arg)
+bool encodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg)
 {
     // For each attached sensor
     for (int i = 0; i < sensorCount; ++i)
     {
-        //read and encode the sensor's measurements
+        // read and encode the sensor's measurements
         sensors[i]->readAndEncodeMeasurements(ostream, field, arg, g_rbeFlag);
     }
     return true;

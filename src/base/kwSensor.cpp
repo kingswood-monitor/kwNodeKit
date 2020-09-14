@@ -1,16 +1,20 @@
 #include "debug.h"
 
-#include <Arduino.h>
 #include "kwSensor.h"
+#include <Arduino.h>
 #include <pb_encode.h>
 
 /*-----------------------------------------------------------
  * CONSTRUCTORS
  *----------------------------------------------------------*/
 
-kwSensor::kwSensor() {}
+kwSensor::kwSensor()
+{
+}
 
-kwSensor::kwSensor(SensorName name) : name_(name) {}
+kwSensor::kwSensor(SensorName name) : name_(name)
+{
+}
 
 /*-----------------------------------------------------------
  * PUBLIC METHODS
@@ -35,15 +39,8 @@ SensorName kwSensor::name()
  * HELPERS
  *----------------------------------------------------------*/
 
-bool processMeasurement(
-    Measurement &measurement,
-    double value,
-    kwSensor::RBEConfig &rbeConfig,
-    bool rbeFlag,
-    int measurementTag,
-    const char *label,
-    pb_ostream_t *ostream,
-    const pb_field_iter_t *field)
+bool processMeasurement(Measurement &measurement, double value, kwSensor::RBEConfig &rbeConfig, bool rbeFlag,
+                        int measurementTag, const char *label, pb_ostream_t *ostream, const pb_field_iter_t *field)
 {
     kwSensor::Reading reading = makeReading(value, rbeConfig);
     if (!rbeFlag || (rbeFlag && reading.hasChanged))
@@ -61,9 +58,7 @@ bool processMeasurement(
     return true;
 }
 
-kwSensor::Reading makeReading(
-    double &value,
-    kwSensor::RBEConfig &config)
+kwSensor::Reading makeReading(double &value, kwSensor::RBEConfig &config)
 {
     kwSensor::Reading m;
     m.value = value;
@@ -72,9 +67,7 @@ kwSensor::Reading makeReading(
     return m;
 }
 
-bool hasChanged(
-    double value,
-    kwSensor::RBEConfig &config)
+bool hasChanged(double value, kwSensor::RBEConfig &config)
 {
     if (abs(value - config.last_reading) >= config.delta)
     {
@@ -84,13 +77,9 @@ bool hasChanged(
     return false;
 }
 
-bool encode_field(
-    Measurement *m,
-    pb_ostream_t *ostream,
-    const pb_field_iter_t *field)
+bool encode_field(Measurement *m, pb_ostream_t *ostream, const pb_field_iter_t *field)
 {
-    return pb_encode_tag_for_field(ostream, field) &&
-           pb_encode_submessage(ostream, Measurement_fields, m);
+    return pb_encode_tag_for_field(ostream, field) && pb_encode_submessage(ostream, Measurement_fields, m);
 }
 
 void printMeasurement(const char *label, kwSensor::Reading *reading)

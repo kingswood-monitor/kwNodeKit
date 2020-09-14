@@ -1,13 +1,13 @@
 /**
  * kwBattery.cpp
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 
+#include "packet.pb.h"
 #include <Arduino.h>
 #include <pb_encode.h>
-#include "packet.pb.h"
 
 #include "kwBattery.h"
 
@@ -17,19 +17,15 @@
 
 bool kwBattery::startSensor()
 {
-    /** There is no convenient way of detecting if the device is battery 
+    /** There is no convenient way of detecting if the device is battery
      * operated. So if it's been added, assume it's installed.
      */
     isInstalled(true);
     return true;
 }
 
-bool kwBattery::
-    readAndEncodeMeasurements(
-        pb_ostream_t *ostream,
-        const pb_field_iter_t *field,
-        void *const *arg,
-        bool rbeFlag)
+bool kwBattery::readAndEncodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg,
+                                          bool rbeFlag)
 {
     /** Flag to capture that encoding was successful */
     bool bSuccess = false;
@@ -45,15 +41,8 @@ bool kwBattery::
     measuredVbat /= 1024; // convert to voltage
 
     /** Encode it and capture the success*/
-    bSuccess |= processMeasurement(
-        measurement,
-        measuredVbat,
-        rbeVoltageConfig,
-        rbeFlag,
-        Measurement_voltage_tag,
-        "V",
-        ostream,
-        field);
+    bSuccess |= processMeasurement(measurement, measuredVbat, rbeVoltageConfig, rbeFlag, Measurement_voltage_tag, "V",
+                                   ostream, field);
 
     return bSuccess;
 }

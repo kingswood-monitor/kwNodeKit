@@ -1,7 +1,7 @@
 /**
  * kwTransport.h
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 

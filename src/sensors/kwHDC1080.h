@@ -2,13 +2,13 @@
 /**
  * kwHDC1080.h:
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 
-#include <Wire.h>
-#include <ClosedCube_HDC1080.h>
 #include "kwSensor.h"
+#include <ClosedCube_HDC1080.h>
+#include <Wire.h>
 
 /**
  * Implements an HDC1080 Sensor - a high accuracy temperature and humidity sensor
@@ -16,7 +16,7 @@
  */
 class kwHDC1080 : public kwSensor
 {
-public:
+  public:
     /*-----------------------------------------------------------
      * CONSTRUCTORS
      *----------------------------------------------------------*/
@@ -32,10 +32,10 @@ public:
      *----------------------------------------------------------*/
 
     /**
-     * @brief Start the sensor. 
+     * @brief Start the sensor.
      * The concrete implementation carries out any functions required to initialise
      * and start the sensor.
-     * 
+     *
      * @return TRUE if the sensor started.
      */
     bool startSensor();
@@ -43,26 +43,22 @@ public:
     /**
      * @brief Read and encode the sensor.
      * This function is provided by the protobuf library for encoding the sensor's information.
-     * It's how a sensor describes what it is e.g. 'Temperature', and the value. Each concrete 
+     * It's how a sensor describes what it is e.g. 'Temperature', and the value. Each concrete
      * implementation provides the code required to read the sensor, and adds the metadata.
-     * 
+     *
      * @param pb_ostream_t The stream to encode readings to (see nanopb).
      * @param field The field to encode (see nanopb).
      * @param arg Arguments to the encoding process (see nanopb).
      * @param rbeFlag Set TRUE to specify Report By Exception processing.
-     * 
+     *
      * @return TRUE if the measurement encoded correctly.
      */
-    bool readAndEncodeMeasurements(
-        pb_ostream_t *ostream,
-        const pb_field_iter_t *field,
-        void *const *arg,
-        bool rbeFlag);
+    bool readAndEncodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg, bool rbeFlag);
 
     /*-----------------------------------------------------------
      * PRIVATE PROPERTIES
      *----------------------------------------------------------*/
-private:
+  private:
     /** The sensor object */
     ClosedCube_HDC1080 hdc1080_;
 };

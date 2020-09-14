@@ -1,7 +1,7 @@
 /**
  * kwLora.cpp: Environment Sensor node firmware
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 
@@ -28,20 +28,16 @@ RH_RF95 driver(RFM95_CS, RFM95_INT);
 RHReliableDatagram manager(driver, 0);
 
 // Constructors
-kwLoraRH::
-    kwLoraRH() : kwSensor(SensorName_LORA){};
+kwLoraRH::kwLoraRH() : kwSensor(SensorName_LORA){};
 
-kwLoraRH::
-    kwLoraRH(uint8_t clientAddress, uint8_t txPower)
-    : kwSensor(SensorName_LORA), txPower_(txPower)
+kwLoraRH::kwLoraRH(uint8_t clientAddress, uint8_t txPower) : kwSensor(SensorName_LORA), txPower_(txPower)
 {
     manager.setThisAddress(clientAddress);
 };
 
 // kwTransport interface
 
-bool kwLoraRH::
-    startTransport()
+bool kwLoraRH::startTransport()
 {
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, HIGH);
@@ -51,10 +47,8 @@ bool kwLoraRH::
     Serial.println("Starting LoRa");
     Serial.println(status);
 
-    RH_RF95::ModemConfig modemConfig = {
-        RH_RF95_BW_15_6KHZ | RH_RF95_CODING_RATE_4_8,
-        RH_RF95_SPREADING_FACTOR_512CPS,
-        0x04};
+    RH_RF95::ModemConfig modemConfig = {RH_RF95_BW_15_6KHZ | RH_RF95_CODING_RATE_4_8, RH_RF95_SPREADING_FACTOR_512CPS,
+                                        0x04};
 
     driver.setTxPower(10);
     driver.setFrequency(868.0);
@@ -76,8 +70,7 @@ bool kwLoraRH::
 uint8_t ok[3] = "OK";
 uint8_t ok_len = 3;
 
-bool kwLoraRH::
-    sendPacket(uint16_t packetID, uint8_t *packetBuffer, uint8_t bytesWritten)
+bool kwLoraRH::sendPacket(uint16_t packetID, uint8_t *packetBuffer, uint8_t bytesWritten)
 {
     if (manager.sendtoWait(packetBuffer, bytesWritten, serverAddress_))
     {
@@ -116,18 +109,13 @@ bool kwLoraRH::
 
 // kwSensor interface
 
-bool kwLoraRH::
-    startSensor()
+bool kwLoraRH::startSensor()
 {
     isInstalled_ = true;
     return isInstalled_;
 }
-bool kwLoraRH::
-    readAndEncodeMeasurements(
-        pb_ostream_t *ostream,
-        const pb_field_iter_t *field,
-        void *const *arg,
-        bool rbeFlag)
+bool kwLoraRH::readAndEncodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg,
+                                         bool rbeFlag)
 {
     bool result = false;
 
@@ -135,57 +123,32 @@ bool kwLoraRH::
     measurement.sensor = name_;
 
     // rssi
-    result |= processMeasurement(
-        measurement,
-        rssi(),
-        rbeRSSIConfig,
-        rbeFlag,
-        Measurement_rssi_tag,
-        "RSSI",
-        ostream,
-        field);
+    result |=
+        processMeasurement(measurement, rssi(), rbeRSSIConfig, rbeFlag, Measurement_rssi_tag, "RSSI", ostream, field);
 
     // snr
-    result |= processMeasurement(
-        measurement,
-        snr(),
-        rbeSNRConfig,
-        rbeFlag,
-        Measurement_snr_tag,
-        "SNR",
-        ostream,
-        field);
+    result |= processMeasurement(measurement, snr(), rbeSNRConfig, rbeFlag, Measurement_snr_tag, "SNR", ostream, field);
 
     // frequency error
-    result |= processMeasurement(
-        measurement,
-        freqError(),
-        rbeFrequencyErrorConfig,
-        rbeFlag,
-        Measurement_frequency_error_tag,
-        "FE",
-        ostream,
-        field);
+    result |= processMeasurement(measurement, freqError(), rbeFrequencyErrorConfig, rbeFlag,
+                                 Measurement_frequency_error_tag, "FE", ostream, field);
 
     return result;
 }
 
 // methods
 
-int16_t kwLoraRH::
-    rssi()
+int16_t kwLoraRH::rssi()
 {
     return driver.lastRssi();
 }
 
-int16_t kwLoraRH::
-    snr()
+int16_t kwLoraRH::snr()
 {
     return driver.lastSNR();
 }
 
-int16_t kwLoraRH::
-    freqError()
+int16_t kwLoraRH::freqError()
 {
     return driver.frequencyError();
 }

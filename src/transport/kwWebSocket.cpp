@@ -3,18 +3,14 @@
 void onMessageCallback(WebsocketsMessage message);
 // void onEventsCallback(WebsocketsEvent event, String data);
 
-kwWebSocket::
-    kwWebSocket(
-        const char *ssid,
-        const char *password,
-        const char *websockets_server_host,
-        const uint16_t websockets_server_port)
-    : _ssid(ssid), _password(password), _websockets_server_host(websockets_server_host), _websockets_server_port(websockets_server_port)
+kwWebSocket::kwWebSocket(const char *ssid, const char *password, const char *websockets_server_host,
+                         const uint16_t websockets_server_port)
+    : _ssid(ssid), _password(password), _websockets_server_host(websockets_server_host),
+      _websockets_server_port(websockets_server_port)
 {
 }
 
-bool kwWebSocket::
-    startTransport()
+bool kwWebSocket::startTransport()
 {
     Serial.print("INFO: Connecting to WiFi");
     WiFi.begin(_ssid, _password);
@@ -51,8 +47,7 @@ bool kwWebSocket::
     return true;
 }
 
-bool kwWebSocket::
-    sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
+bool kwWebSocket::sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
 {
     while (!_client.available())
     {
@@ -74,7 +69,8 @@ void onMessageCallback(WebsocketsMessage message)
     Serial.println(message.data());
 }
 
-// void onEventsCallback(WebsocketsEvent event, String data, const char *websockets_server_host, const uint16_t websockets_server_port)
+// void onEventsCallback(WebsocketsEvent event, String data, const char *websockets_server_host, const uint16_t
+// websockets_server_port)
 // {
 //     if (event == WebsocketsEvent::ConnectionOpened)
 //     {

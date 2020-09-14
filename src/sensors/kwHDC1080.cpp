@@ -1,12 +1,12 @@
 /**
  * kwHDC1080.cpp
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 
-#include <pb_encode.h>
 #include "packet.pb.h"
+#include <pb_encode.h>
 
 #include "kwHDC1080.h"
 
@@ -25,7 +25,6 @@ bool kwHDC1080::startSensor()
     if ((hdc1080_.readDeviceId() == 4176))
     {
         bDidStart = true;
-        
     }
 
     isInstalled(bDidStart);
@@ -33,11 +32,8 @@ bool kwHDC1080::startSensor()
     return bDidStart;
 }
 
-bool kwHDC1080::readAndEncodeMeasurements(
-    pb_ostream_t *ostream,
-    const pb_field_iter_t *field,
-    void *const *arg,
-    bool rbeFlag)
+bool kwHDC1080::readAndEncodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg,
+                                          bool rbeFlag)
 {
     /** Flag to capture that encoding was successful */
     bool bSuccess = false;
@@ -50,29 +46,15 @@ bool kwHDC1080::readAndEncodeMeasurements(
     float current_temperature = hdc1080_.readTemperature();
 
     /** Encode it and capture the success*/
-    bSuccess |= processMeasurement(
-        measurement,
-        current_temperature,
-        rbeTemperatureConfig,
-        rbeFlag,
-        Measurement_temperature_tag,
-        "T",
-        ostream,
-        field);
+    bSuccess |= processMeasurement(measurement, current_temperature, rbeTemperatureConfig, rbeFlag,
+                                   Measurement_temperature_tag, "T", ostream, field);
 
     //** Get the humidity */
     float current_humidity = hdc1080_.readHumidity();
 
     /** Encode it and capture the success*/
-    bSuccess |= processMeasurement(
-        measurement,
-        current_humidity,
-        rbeHumidityConfig,
-        rbeFlag,
-        Measurement_humidity_tag,
-        "H",
-        ostream,
-        field);
+    bSuccess |= processMeasurement(measurement, current_humidity, rbeHumidityConfig, rbeFlag, Measurement_humidity_tag,
+                                   "H", ostream, field);
 
     return bSuccess;
 }

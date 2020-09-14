@@ -15,7 +15,7 @@
 
 using namespace std;
 
-/** TTGO LoRa pin assignments */
+//  TTGO LoRa pin assignments
 #define PIN_CS 18
 #define PIN_RST 14
 #define PIN_INT 26
@@ -53,13 +53,13 @@ bool kwLoraSM::startTransport()
 
     Serial.println("started");
 
-    /** Place the device in receive mode */
+    //  Place the device in receive mode
     LoRa_rxMode();
 
-    /** Set the interrupt handler for received messages */
+    //  Set the interrupt handler for received messages
     LoRa.onReceive(onReceive);
 
-    /** Assume if we get here, the device has started */
+    //  Assume if we get here, the device has started
     return true;
 };
 
@@ -68,7 +68,7 @@ bool kwLoraSM::sendPacket(
     uint8_t *packetBuffer,
     uint8_t bytesWritten)
 {
-    /** NOTE: We are ignoring uiTimeStamp */
+    //  NOTE: We are ignoring uiTimeStamp
     sendPacket(packetBuffer, bytesWritten);
 
     /* Print debug info FIXME Add a debug flag */
@@ -83,7 +83,7 @@ bool kwLoraSM::sendPacket(
 
 bool kwLoraSM::startSensor()
 {
-    /** FIXME This restarts the LoRa radio to see if it is working - check if this has side effects. */
+    //  FIXME This restarts the LoRa radio to see if it is working - check if this has side effects.
     bool bDidStart = LoRa.begin(frequency_);
     isInstalled(bDidStart);
 
@@ -96,17 +96,17 @@ bool kwLoraSM::readAndEncodeMeasurements(
     void *const *arg,
     bool rbeFlag)
 {
-    /** Flag to capture that encoding was successful */
+    //  Flag to capture that encoding was successful
     bool bSuccess = false;
 
-    /** Define a measurement with default values and set the sensor name. */
+    //  Define a measurement with default values and set the sensor name.
     Measurement measurement = Measurement_init_default;
     measurement.sensor = name_;
 
-    /** Get the RSSI */
+    //  Get the RSSI
     float rssi = LoRa.packetRssi();
 
-    /** Encode it and capture the success*/
+    //  Encode it and capture the success
     bSuccess |= processMeasurement(
         measurement,
         rssi,
@@ -117,10 +117,10 @@ bool kwLoraSM::readAndEncodeMeasurements(
         ostream,
         field);
 
-    //** Get the SNR */
+    ///  Get the SNR
     float snr = LoRa.packetSnr();
 
-    /** Encode it and capture the success*/
+    //  Encode it and capture the success
     bSuccess |= processMeasurement(
         measurement,
         LoRa.packetSnr(),
@@ -131,10 +131,10 @@ bool kwLoraSM::readAndEncodeMeasurements(
         ostream,
         field);
 
-    /** Get the frequency error */
+    //  Get the frequency error
     float frequencyError = LoRa.packetFrequencyError();
 
-    /** Encode it and capture the success*/
+    //  Encode it and capture the success
     bSuccess |= processMeasurement(
         measurement,
         frequencyError,

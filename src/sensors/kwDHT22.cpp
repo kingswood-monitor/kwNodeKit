@@ -1,12 +1,12 @@
 /**
  * kwDHT22.cpp: Environment Sensor node firmware
  * Copyright (c) 2020 Richard J. Lyon
- * 
+ *
  * See LICENSE for terms.
  */
 
-#include <pb_encode.h>
 #include "packet.pb.h"
+#include <pb_encode.h>
 
 #include "kwDHT22.h"
 
@@ -34,11 +34,8 @@ bool kwDHT22::startSensor()
     return bDidStart;
 }
 
-bool kwDHT22::readAndEncodeMeasurements(
-    pb_ostream_t *ostream,
-    const pb_field_iter_t *field,
-    void *const *arg,
-    bool rbeFlag)
+bool kwDHT22::readAndEncodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg,
+                                        bool rbeFlag)
 {
     /** Flag to capture that encoding was successful */
     bool bSuccess = false;
@@ -53,15 +50,8 @@ bool kwDHT22::readAndEncodeMeasurements(
     /** Encode it and capture the success*/
     if (dht_.getStatus() == 0)
     {
-        bSuccess |= processMeasurement(
-            measurement,
-            current_temperature,
-            rbeTemperatureConfig,
-            rbeFlag,
-            Measurement_temperature_tag,
-            "T",
-            ostream,
-            field);
+        bSuccess |= processMeasurement(measurement, current_temperature, rbeTemperatureConfig, rbeFlag,
+                                       Measurement_temperature_tag, "T", ostream, field);
     }
 
     /** Get the humidity */
@@ -70,15 +60,8 @@ bool kwDHT22::readAndEncodeMeasurements(
     /** Encode it and capture the success*/
     if (dht_.getStatus() == 0)
     {
-        bSuccess |= processMeasurement(
-            measurement,
-            current_humidity,
-            rbeHumidityConfig,
-            rbeFlag,
-            Measurement_humidity_tag,
-            "H",
-            ostream,
-            field);
+        bSuccess |= processMeasurement(measurement, current_humidity, rbeHumidityConfig, rbeFlag,
+                                       Measurement_humidity_tag, "H", ostream, field);
     }
 
     return bSuccess;
