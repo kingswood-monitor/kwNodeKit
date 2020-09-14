@@ -11,6 +11,7 @@
 #include "debug.h"
 #include "kwNode.h"
 #include "packet.pb.h"
+#include <tasks.h>
 
 // Maximum size of the buffer holding the encoded protobuf stream
 #define MAX_PROTOBUF_BYTES 120
@@ -105,6 +106,11 @@ void kwNode::start()
     }
 
     // Start the tasks
+
+    vCreateLEDFlashTimer();
+    vCreateMailbox();
+    xTaskCreate(vReadMeasurementTask, "Read measurements", STACK_DEPTH, &node, 1, nullptr);
+    xTaskCreate(vTransmitMeasurementTask, "Transmit measurements", STACK_DEPTH, &lora, 1, nullptr);
 }
 
 uint8_t kwNode::readAndEncodeMeasurements(uint16_t packetID, std::array<uint8_t, 255> &buffer, bool rbeFlag)
