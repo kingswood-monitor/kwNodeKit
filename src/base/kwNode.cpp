@@ -12,22 +12,22 @@
 #include "kwNode.h"
 #include "packet.pb.h"
 
-/** Maximum size of the buffer holding the encoded protobuf stream. */
+// Maximum size of the buffer holding the encoded protobuf stream
 #define MAX_PROTOBUF_BYTES 120
-/** Maximum number of sensors. */
+// Maximum number of sensors
 #define MAX_SENSORS 4
-/** Maximum number of transports. */
+// Maximum number of transports
 #define MAX_TRANSPORTS 2
 
-/** List and pointer for registering transports */
+// List and pointer for registering transports
 kwTransport *transports[MAX_TRANSPORTS];
 uint8_t transportCount;
 
-/** List and pointer for registering sensors */
+// List and pointer for registering sensors
 kwSensor *sensors[MAX_SENSORS];
 uint8_t sensorCount;
 
-/** Flag for specifying "report by exception". */
+// Flag for specifying "report by exception"
 bool g_rbeFlag;
 
 /*-----------------------------------------------------------
@@ -68,11 +68,13 @@ void kwNode::addTransport(kwTransport *transport)
 
 void kwNode::start()
 {
+    // Start the transports
     for (int j = 0; j < transportCount; ++j)
     {
         transports[j]->startTransport();
     }
 
+    // Start the sensors
     for (int i = 0; i < sensorCount; ++i)
     {
         sensors[i]->startSensor();
@@ -101,6 +103,8 @@ void kwNode::start()
             Serial.println("OK");
         }
     }
+
+    // Start the tasks
 }
 
 uint8_t kwNode::readAndEncodeMeasurements(uint16_t packetID, std::array<uint8_t, 255> &buffer, bool rbeFlag)
