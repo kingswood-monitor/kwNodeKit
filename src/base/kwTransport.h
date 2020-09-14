@@ -7,7 +7,6 @@
  */
 
 #include <Arduino.h>
-#include "kwLED.h"
 #include "packet.pb.h"
 
 /**
@@ -18,13 +17,12 @@ class kwTransport
 {
 public:
     kwTransport();
-    virtual bool startTransport() = 0;                                                              // start the radio
-    virtual bool sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten) = 0; // send a packet
+
     void isGateway(bool flag);
     bool isGateway();
 
-protected:
-    kwLED transportLed;
+    virtual bool startTransport() = 0;                                                              // start the radio
+    virtual bool sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten) = 0; // send a packet
 
 private:
     bool _isGateway = false;

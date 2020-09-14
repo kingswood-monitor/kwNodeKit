@@ -6,12 +6,14 @@
  */
 // https://randomnerdtutorials.com/esp32-lora-rfm95-transceiver-arduino-ide/
 
-#include "kwLoraSM.h"
-#include "packet.pb.h"
 #include <string>
 
 #include <SPI.h>
 #include <LoRa.h>
+
+#include "kwLoraSM.h"
+#include "packet.pb.h"
+#include "buffer_with_length.h"
 
 using namespace std;
 
@@ -29,20 +31,24 @@ kwLoraSM::kwLoraSM() : kwSensor(SensorName_LORA){};
 
 // kwTransport interface ////////////////////////////////////////////////////////////
 
-bool kwLoraSM::
-    startTransport()
+bool kwLoraSM::startTransport()
 {
+    /* start the device */
     LoRa.setPins(PIN_CS, PIN_RST, PIN_INT);
+    Serial.print("Starting LoRa...");
     while (!LoRa.begin(frequency_))
     {
-        Serial.println(".");
+        Serial.print(".");
         delay(500);
     }
-    // LoRa.onReceive(onReceive);
-    // LoRa.onTxDone(onTxDone);
-    LoRa_rxMode();
+    Serial.println("started");
 
-    transportLed.blink(3);
+    /* set the interrupt handler for received messages */
+    receivePacketQueue = xQueueCreate(5, sizeof(int));
+    LoRa.onReceive(onReceive);
+
+    /* place the device in receive mode */
+    LoRa_rxMode();
 
     return true;
 };
@@ -60,18 +66,17 @@ bool kwLoraSM::
 
 // kwSensor interface ///////////////////////////////////////////////////////////////
 
-bool kwLoraSM::
-    startSensor()
+bool kwLoraSM::startSensor()
 {
     isInstalled_ = true;
     return isInstalled_;
 }
-bool kwLoraSM::
-    readAndEncodeMeasurements(
-        pb_ostream_t *ostream,
-        const pb_field_iter_t *field,
-        void *const *arg,
-        bool rbeFlag)
+
+bool kwLoraSM::readAndEncodeMeasurements(
+    pb_ostream_t *ostream,
+    const pb_field_iter_t *field,
+    void *const *arg,
+    bool rbeFlag)
 {
     bool result = false;
 
@@ -116,8 +121,8 @@ bool kwLoraSM::
 
 // private methods //////////////////////////////////////////////////////////////////
 
-void kwLoraSM::
-    LoRa_rxMode()
+/* set receive mode */
+void kwLoraSM::LoRa_rxMode()
 {
     if (isGateway())
     {
@@ -131,8 +136,8 @@ void kwLoraSM::
     }
 }
 
-void kwLoraSM::
-    LoRa_txMode()
+/* set transmit mode */
+void kwLoraSM::LoRa_txMode()
 {
     if (isGateway())
     {
@@ -146,15 +151,14 @@ void kwLoraSM::
     }
 }
 
-void kwLoraSM::
-    onTxDone()
+void kwLoraSM::onTxDone()
 {
     Serial.println("TxDone");
     // LoRa_rxMode();
 }
 
-void kwLoraSM::
-    LoRa_sendMessage(uint8_t *buffer, size_t size)
+/* send a message */
+void kwLoraSM::LoRa_sendMessage(uint8_t *buffer, size_t size)
 {
     LoRa_txMode();                             // set tx mode
     LoRa.beginPacket();                        // start packet
@@ -162,8 +166,8 @@ void kwLoraSM::
     LoRa.endPacket(true);                      // finish packet and send it
 }
 
-uint8_t kwLoraSM::
-    parsePacket(uint8_t *buffer)
+/* parse a packet */
+uint8_t kwLoraSM::parsePacket(uint8_t *buffer)
 {
     int packetSize = LoRa.parsePacket();
     if (packetSize)
@@ -177,46 +181,30 @@ uint8_t kwLoraSM::
         }
 
         assert(i == packetSize);
-
-        // Serial.print("Received packet: bytes=");
-        // Serial.print(packetSize);
-        // Serial.print(", RSSI=");
-        // Serial.println(LoRa.packetRssi());
     }
     return packetSize;
 }
 
-// helper
+/* interrupt handler if packet received */
 void onReceive(int packetSize)
 {
-    // String message = "";
-
-    // while (LoRa.available())
-    // {
-    //     message += (char)LoRa.read();
-    // }
-
-    // Serial.print("WOOOHOOOOOO   Node Receive: ");
-    // Serial.println(message);
+    xQueueSendToBackFromISR(receivePacketQueue, packetSize, 0);
 }
-
-// helpers //////////////////////////////////////////////////////////////////////////////
-
 
 /* utility function to print packet to serial */
 void vPrintPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
 {
     char hexCar[2];
-    
+
     Serial.print(F("\n["));
     Serial.print(uiTimeStamp);
-    Serial.print(F("] SEND "));
+    Serial.print(F("] RECEIVE "));
 
     for (int i = 0; i < bytesWritten; i++)
-        {
-            sprintf(hexCar, "%02X", packetBuffer[i]);
-            Serial.print(hexCar);
-        }
+    {
+        sprintf(hexCar, "%02X", packetBuffer[i]);
+        Serial.print(hexCar);
+    }
     Serial.print(F(" ("));
     Serial.print(bytesWritten);
     Serial.println(F("B)"));

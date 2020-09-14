@@ -14,7 +14,9 @@
 class kwLoraSM : public kwTransport, public kwSensor
 {
 public:
-    // constructors
+    /**
+     * Create a new instance of the kwLoraSM class.
+     */
     kwLoraSM();
 
     // kwTransport interface
@@ -35,7 +37,6 @@ public:
     int16_t snr();
     int16_t freqError();
 
-    /////////
     uint8_t parsePacket(uint8_t *buffer);
 
 private:

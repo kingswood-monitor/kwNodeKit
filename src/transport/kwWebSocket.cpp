@@ -23,13 +23,9 @@ bool kwWebSocket::
     {
         Serial.print(".");
         delay(1000);
-        transportLed.toggle();
     }
-    transportLed.turnOn();
     Serial.print("Connected, IP: ");
     Serial.println(WiFi.localIP());
-
-    transportLed.activeLow(); // set up for "negative" flash
 
     // run callback when messages are received
     _client.onMessage(onMessageCallback);
@@ -60,13 +56,11 @@ bool kwWebSocket::
 {
     while (!_client.available())
     {
-        transportLed.toggle();
         _client.connect(_websockets_server_host, _websockets_server_port, "/");
         delay(1000);
     }
 
     _client.sendBinary((char *)packetBuffer, bytesWritten);
-    transportLed.blink();
 
     return true;
 }

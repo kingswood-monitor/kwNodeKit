@@ -1,15 +1,14 @@
 #include "kwTransport.h"
 #include "kwLED.h"
 
-kwTransport::
-    kwTransport()
+kwTransport::kwTransport(){};
+
+void kwTransport::isGateway(bool flag)
 {
-    pinMode(LED_BUILTIN, OUTPUT);
-    transportLed = kwLED();
-};
+    _isGateway = flag;
+}
 
-void kwTransport::
-    isGateway(bool flag) { _isGateway = flag; }
-
-bool kwTransport::
-    isGateway() { return _isGateway; }
+bool kwTransport::isGateway()
+{
+    return _isGateway;
+}
