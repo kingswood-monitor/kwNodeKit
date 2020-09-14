@@ -13,7 +13,6 @@
 
 #include "kwLoraSM.h"
 #include "packet.pb.h"
-#include "buffer_with_length.h"
 
 using namespace std;
 
