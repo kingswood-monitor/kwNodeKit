@@ -107,6 +107,13 @@ public:
     bool isInstalled();
 
     /**
+     * isInstalled property setter.
+     * 
+     * @param value Pass TRUE if the sensor is installed.
+     */
+    void isInstalled(bool value);
+
+    /**
      * name property getter.
      * 
      * @return The name of the sensor.

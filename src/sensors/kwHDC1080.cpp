@@ -16,7 +16,7 @@
 
 bool kwHDC1080::startSensor()
 {
-    bool isInstalled_ = false;
+    bool bDidStart = false;
 
     /** Start the device */
     hdc1080_.begin(0x40);
@@ -24,10 +24,13 @@ bool kwHDC1080::startSensor()
     /** If we can read the device id, it must have started */
     if ((hdc1080_.readDeviceId() == 4176))
     {
-        isInstalled_ = true;
+        bDidStart = true;
+        
     }
 
-    return isInstalled_;
+    isInstalled(bDidStart);
+
+    return bDidStart;
 }
 
 bool kwHDC1080::readAndEncodeMeasurements(

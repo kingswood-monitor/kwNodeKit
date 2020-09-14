@@ -20,8 +20,8 @@ bool kwBattery::startSensor()
     /** There is no convenient way of detecting if the device is battery 
      * operated. So if it's been added, assume it's installed.
      */
-    isInstalled_ = true;
-    return isInstalled_;
+    isInstalled(true);
+    return true;
 }
 
 bool kwBattery::

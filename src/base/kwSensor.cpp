@@ -16,9 +16,20 @@ kwSensor::kwSensor(SensorName name) : name_(name) {}
  * PUBLIC METHODS
  *----------------------------------------------------------*/
 
-bool kwSensor::isInstalled() { return isInstalled_; }
+bool kwSensor::isInstalled()
+{
+    return isInstalled_;
+}
 
-SensorName kwSensor::name() { return name_; }
+void kwSensor::isInstalled(bool value)
+{
+    isInstalled_ = value;
+}
+
+SensorName kwSensor::name()
+{
+    return name_;
+}
 
 /*-----------------------------------------------------------
  * HELPERS

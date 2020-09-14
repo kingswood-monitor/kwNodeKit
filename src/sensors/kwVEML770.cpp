@@ -16,7 +16,7 @@
 
 bool kwVEML7700::startSensor()
 {
-    bool isInstalled_ = false;
+    bool bDidStart = false;
 
     /** A temporary variable to allow us to check if the device is active */
     float lux;
@@ -26,7 +26,7 @@ bool kwVEML7700::startSensor()
 
     if (!veml_.getALSLux(lux))
     {
-        isInstalled_ = true;
+        bDidStart = true;
         /**
          * Coonfigure the device.
          * The default integration time of 100ms results in reading clipped to 2126.52
@@ -35,7 +35,10 @@ bool kwVEML7700::startSensor()
         veml_.setIntegrationTime(VEML7700::als_itime_t::ALS_INTEGRATION_50ms);
         veml_.setGain(VEML7700::als_gain_t::ALS_GAIN_d8);
     }
-    return isInstalled_;
+
+    isInstalled(bDidStart);
+
+    return bDidStart;
 }
 
 bool kwVEML7700::

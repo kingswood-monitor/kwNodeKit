@@ -18,7 +18,7 @@ bool kwDHT22::startSensor()
 {
     // FIXME Check the logic of how sensors are started and the flag is set
 
-    bool isInstalled_ = false;
+    bool bDidStart = false;
 
     /** Set the data pin */
     dht_.setup(pin_);
@@ -26,10 +26,12 @@ bool kwDHT22::startSensor()
     /** The DHT22 returns 0 if the device is working */
     if (dht_.getStatus() == 0)
     {
-        isInstalled_ = true;
+        bDidStart = true;
     }
 
-    return isInstalled_;
+    isInstalled(bDidStart);
+
+    return bDidStart;
 }
 
 bool kwDHT22::readAndEncodeMeasurements(
