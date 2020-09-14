@@ -53,11 +53,10 @@ bool kwLoraSM::startTransport()
     return true;
 };
 
-bool kwLoraSM::
-    sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
+bool kwLoraSM::sendPacket(uint16_t uiTimeStamp, uint8_t *packetBuffer, uint8_t bytesWritten)
 {
     LoRa_sendMessage(packetBuffer, bytesWritten);
-    
+
     /* print debug info */
     vPrintPacket(uiTimeStamp, packetBuffer, bytesWritten);
 
