@@ -30,17 +30,18 @@ public:
     /*-----------------------------------------------------------
     * VIRTUAL INTERFACE METHODS
     *----------------------------------------------------------*/
+
+    /**
+     * Initialise the radio and configure it for transmission.
+     */
     virtual bool startTransport() = 0;
 
     /** 
-     * Virtual method for transmitting a packet of information over the channel.
+     * Send a packet of information over the channel.
      * 
      * @param uiTimeStamp A number allowing the packet to be identified.
-     * 
      * @param packetBuffer A pointer to a buffer containing the information to be transmitted.
-     * 
      * @param bytesWritten The number of bytes to transmit.
-     * 
      */
     virtual bool sendPacket(
         uint16_t uiTimeStamp,

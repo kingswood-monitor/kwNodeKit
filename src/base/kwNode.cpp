@@ -79,6 +79,7 @@ void kwNode::start()
     for (int i = 0; i < sensorCount; ++i)
     {
         sensors[i]->startSensor();
+
         Serial.print(F("Starting Sensor "));
         Serial.print(i);
         Serial.print(F("..."));
@@ -86,7 +87,7 @@ void kwNode::start()
         // Remove sensors that haven't started
         if (!sensors[i]->isInstalled())
         {
-            Serial.println(F("failed: deleted."));
+            Serial.println(F("failed: removed"));
             delete sensors[i];
             if (i < sensorCount)
             {
