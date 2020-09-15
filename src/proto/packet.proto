@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+enum NodeType {
+  UnknownType = 0;
+  environment = 1;
+  energy = 2;
+  bridge = 3;
+}
+
+enum NodeLocation {
+  unknownLocation = 0;
+  outdoor = 2;
+  greenhouse = 3;
+  lounge = 4;
+  bedroom = 5;
+  gas = 20;
+  electricity = 21;
+}
+
+enum SensorName {
+  UnknownSensor = 0;
+  HDC1080 = 1;
+  SDC30 = 2;
+  VEML7700 = 3;
+  BMP388 = 4;
+  LORA = 5;
+  BATTERY = 6;
+  EMONPI = 7;
+  BOILERLIGHT = 8;
+  DHT22 = 9;
+  VIRTUAL = 20;
+}
+
+message Payload {}
+
+message Measurement {
+  SensorName sensor = 1;
+  oneof type {
+    float temperature = 2;
+    float humidity = 3;
+    float pressure = 4;
+    float co2 = 5;
+    float light = 6;
+    float electricity = 7;
+    bool gas = 8;
+
+    // DEVICE STATUS
+    float voltage = 20;
+
+    // LORA
+    float rssi = 30;
+    float frequency_error = 31;
+    float snr = 32;
+
+    // Calculated and virtual measurements
+    float dewpoint = 40;
+  }
+}
+
+message Meta {
+  NodeLocation node_location = 1;
+  NodeType node_type = 2;
+  reserved 3;
+  reserved 4;
+  string firmware_version = 5;
+  int32 chip_id = 6;
+}
+
+message Packet {
+  int32 packet_id = 1;
+  Meta meta = 2;
+  repeated oneof payload {
+    Measurement measurements = 3;
+    Command command = 4;
+  }
+}

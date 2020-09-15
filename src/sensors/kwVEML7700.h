@@ -13,7 +13,7 @@
  * Implements a VEML7700 ambient light sensor
  * See: https://learn.adafruit.com/adafruit-veml7700/arduino
  */
-class kwVEML7700 : public kwSensor
+class kwVEML7700 : public NodeInput
 {
   public:
     /*-----------------------------------------------------------
@@ -24,7 +24,20 @@ class kwVEML7700 : public kwSensor
      * @brief Default constructor.
      * Sets the sensor name per protobuf SensorName type.
      */
-    kwVEML7700() : kwSensor(SensorName_VEML7700){};
+    kwVEML7700(SensorName name, uint8_t interval, u8 inter_humid u8_inter temp) : NodeInput()
+    {
+        this.name = name;
+        this.interval = interval;
+    };
+
+    /**
+     * @brief Default constructor.
+     * Sets the sensor name per protobuf SensorName type.
+     */
+    kwVEML7700(SensorName name) : NodeInput()
+    {
+        kwVEML7700(name, 1, 1, 1);
+    };
 
     /*-----------------------------------------------------------
      * kwSensor VIRTUAL INTERFACE METHODS
@@ -37,22 +50,25 @@ class kwVEML7700 : public kwSensor
      *
      * @return TRUE if the sensor started.
      */
-    bool startSensor();
+    bool start()
+    {
+        task = vTaskCreate(, , , , *this);
+    }
 
-    /**
-     * @brief Read and encode the sensor.
-     * This function is provided by the protobuf library for encoding the sensor's information.
-     * It's how a sensor describes what it is e.g. 'Temperature', and the value. Each concrete
-     * implementation provides the code required to read the sensor, and adds the metadata.
-     *
-     * @param pb_ostream_t The stream to encode readings to (see nanopb).
-     * @param field The field to encode (see nanopb).
-     * @param arg Arguments to the encoding process (see nanopb).
-     * @param rbeFlag Set TRUE to specify Report By Exception processing.
-     *
-     * @return TRUE if the measurement encoded correctly.
-     */
-    bool readAndEncodeMeasurements(pb_ostream_t *ostream, const pb_field_iter_t *field, void *const *arg, bool rbeFlag);
+    bool running()
+    {
+        return task == null;
+    }
+
+    SensorName name()
+    {
+        return this.name;
+    }
+
+    uint8_t interval()
+    {
+        return this.iterval;
+    }
 
   private:
     /*-----------------------------------------------------------
@@ -61,4 +77,14 @@ class kwVEML7700 : public kwSensor
 
     //* The sensor object */
     VEML7700 veml_;
+    SensorName name;
+    TaskHandle_t task;
+    uint8_t interval;
 };
+
+void vemlTask(void *veml)
+{
+    kwVEML7700 *veml = (kwVEML7700 *)veml;
+
+    veml
+}
