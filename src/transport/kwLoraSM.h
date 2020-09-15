@@ -95,6 +95,8 @@ class kwLoraSM : public kwTransport, public kwSensor
      */
     uint8_t parsePacket(uint8_t *buffer);
 
+    void startInterruptHandling();
+
     /**
      * Set transmit power.
      * @param txPower The power.
@@ -141,7 +143,7 @@ class kwLoraSM : public kwTransport, public kwSensor
 };
 
 /*-----------------------------------------------------------
- * HELPERS
+ * CALLBACKS
  *----------------------------------------------------------*/
 
 /**
@@ -150,6 +152,18 @@ class kwLoraSM : public kwTransport, public kwSensor
  * @param packetSize The size of the received packet.
  */
 void onReceive(int packetSize);
+
+/* Callback to turn the LED off */
+void LEDOneShotTimerCallback(TimerHandle_t xTimer);
+
+/*-----------------------------------------------------------
+ * HELPERS
+ *----------------------------------------------------------*/
+
+/**
+ * Processing of the LoRa interrupt is handled by this task. */
+
+void loraHandlerTask(void *pvParameters);
 
 /**
  * Pretty print a packet to th e serial port.

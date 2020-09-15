@@ -103,6 +103,8 @@ void kwNode::start()
             Serial.println("OK");
         }
     }
+
+    
 }
 
 uint8_t kwNode::readAndEncodeMeasurements(uint16_t packetID, std::array<uint8_t, 255> &buffer, bool rbeFlag)
